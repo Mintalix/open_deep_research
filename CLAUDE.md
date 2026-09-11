@@ -1,66 +1,66 @@
-# Open Deep Research Repository Overview
+# Open Deep Research 仓库概览
 
-## Project Description
-Open Deep Research is a configurable, fully open-source deep research agent that works across multiple model providers, search tools, and MCP (Model Context Protocol) servers. It enables automated research with parallel processing and comprehensive report generation.
+## 项目描述
+Open Deep Research 是一个可配置、完全开源的深度研究智能体，可在多种模型提供商、搜索工具和 MCP（Model Context Protocol）服务器上运行。它支持并行处理的自动化研究，并能生成全面的报告。
 
-## Repository Structure
+## 仓库结构
 
-### Root Directory
-- `README.md` - Comprehensive project documentation with quickstart guide
-- `pyproject.toml` - Python project configuration and dependencies
-- `langgraph.json` - LangGraph configuration defining the main graph entry point
-- `uv.lock` - UV package manager lock file
-- `LICENSE` - MIT license
-- `.env.example` - Environment variables template (not tracked)
+### 根目录
+- `README.md` - 包含快速开始指南的全面项目文档
+- `pyproject.toml` - Python 项目配置与依赖
+- `langgraph.json` - LangGraph 配置，定义主图入口
+- `uv.lock` - UV 包管理器锁文件
+- `LICENSE` - MIT 许可证
+- `.env.example` - 环境变量模板（未被版本跟踪）
 
-### Core Implementation (`src/open_deep_research/`)
-- `deep_researcher.py` - Main LangGraph implementation (entry point: `deep_researcher`)
-- `configuration.py` - Configuration management and settings
-- `state.py` - Graph state definitions and data structures  
-- `prompts.py` - System prompts and prompt templates
-- `utils.py` - Utility functions and helpers
-- `files/` - Research output and example files
+### 核心实现（`src/open_deep_research/`）
+- `deep_researcher.py` - 主 LangGraph 实现（入口点：`deep_researcher`）
+- `configuration.py` - 配置管理与设置
+- `state.py` - 图状态定义与数据结构
+- `prompts.py` - 系统提示词与提示词模板
+- `utils.py` - 工具函数与辅助函数
+- `files/` - 研究输出与示例文件
 
-### Legacy Implementations (`src/legacy/`)
-Contains two earlier research implementations:
-- `graph.py` - Plan-and-execute workflow with human-in-the-loop
-- `multi_agent.py` - Supervisor-researcher multi-agent architecture
-- `legacy.md` - Documentation for legacy implementations
-- `CLAUDE.md` - Legacy-specific Claude instructions
-- `tests/` - Legacy-specific tests
+### 旧版实现（`src/legacy/`）
+包含两个较早的研究实现：
+- `graph.py` - 带人工介入的规划与执行工作流
+- `multi_agent.py` - 监督者-研究者多智能体架构
+- `legacy.md` - 旧版实现文档
+- `CLAUDE.md` - 旧版专用的 Claude 说明
+- `tests/` - 旧版专用测试
 
-### Security (`src/security/`)
-- `auth.py` - Authentication handler for LangGraph deployment
+### 安全（`src/security/`）
+- `auth.py` - 用于 LangGraph 部署的认证处理器
 
-### Testing (`tests/`)
-- `run_evaluate.py` - Main evaluation script configured to run on deep research bench
-- `evaluators.py` - Specialized evaluation functions  
-- `prompts.py` - Evaluation prompts and criteria
-- `pairwise_evaluation.py` - Comparative evaluation tools
-- `supervisor_parallel_evaluation.py` - Multi-threaded evaluation
+### 测试（`tests/`）
+- `run_evaluate.py` - 配置为在 deep research bench 上运行的主评估脚本
+- `evaluators.py` - 专用评估函数
+- `prompts.py` - 评估提示词与评估标准
+- `pairwise_evaluation.py` - 对比评估工具
+- `supervisor_parallel_evaluation.py` - 多线程评估
 
-### Examples (`examples/`)
-- `arxiv.md` - ArXiv research example
-- `pubmed.md` - PubMed research example
-- `inference-market.md` - Inference market analysis examples
+### 示例（`examples/`）
+- `arxiv.md` - ArXiv 研究示例
+- `pubmed.md` - PubMed 研究示例
+- `inference-market.md` - 推理市场分析示例
 
-## Key Technologies
-- **LangGraph** - Workflow orchestration and graph execution
-- **LangChain** - LLM integration and tool calling
-- **Multiple LLM Providers** - OpenAI, Anthropic, Google, Groq, DeepSeek support
-- **Search APIs** - Tavily, OpenAI/Anthropic native search, DuckDuckGo, Exa
-- **MCP Servers** - Model Context Protocol for extended capabilities
+## 关键技术
+- **LangGraph** - 工作流编排与图执行
+- **LangChain** - LLM 集成与工具调用
+- **多家 LLM 提供商** - 支持 OpenAI、Anthropic、Google、Groq、DeepSeek
+- **搜索 API** - Tavily、OpenAI/Anthropic 原生搜索、DuckDuckGo、Exa
+- **MCP 服务器** - 用于扩展能力的模型上下文协议
 
-## Development Commands
-- `uvx langgraph dev` - Start development server with LangGraph Studio
-- `python tests/run_evaluate.py` - Run comprehensive evaluations
-- `ruff check` - Code linting
-- `mypy` - Type checking
+## 开发命令
+- `uvx langgraph dev` - 启动带 LangGraph Studio 的开发服务器
+- `python tests/run_evaluate.py` - 运行综合评估
+- `ruff check` - 代码检查
+- `mypy` - 类型检查
 
-## Configuration
-All settings configurable via:
-- Environment variables (`.env` file)
-- Web UI in LangGraph Studio
-- Direct configuration modification
+## 配置
+所有设置均可通过以下方式配置：
+- 环境变量（`.env` 文件）
+- LangGraph Studio 中的 Web UI
+- 直接修改配置
 
-Key settings include model selection, search API choice, concurrency limits, and MCP server configurations.
+关键设置包括模型选择、搜索 API 选择、并发限制以及 MCP 服务器配置。
