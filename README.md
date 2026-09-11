@@ -1,53 +1,53 @@
 # 🔬 Open Deep Research
 
-<img width="1388" height="298" alt="full_diagram" src="https://github.com/user-attachments/assets/12a2371b-8be2-4219-9b48-90503eb43c69" />
+<img width="1388" height="298" alt="完整架构图" src="https://img.mintalix.com/2026/09/55050167206456d6.png" />
 
-Deep research has broken out as one of the most popular agent applications. This is a simple, configurable, fully open source deep research agent that works across many model providers, search tools, and MCP servers. It's performance is on par with many popular deep research agents ([see Deep Research Bench leaderboard](https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard)).
+深度研究（deep research）已成为最流行的智能体应用之一。本项目是一个简单、可配置、完全开源的深度研究智能体，可在多种模型提供商、搜索工具和 MCP 服务器上运行。它的性能与许多流行的深度研究智能体不相上下（[参见 Deep Research Bench 排行榜](https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard)）。
 
-<img width="817" height="666" alt="Screenshot 2025-07-13 at 11 21 12 PM" src="https://github.com/user-attachments/assets/052f2ed3-c664-4a4f-8ec2-074349dcaa3f" />
+<img width="817" height="666" alt="界面截图 2025-07-13" src="https://img.mintalix.com/2026/09/3c069a2f3cbae331.png" />
 
-### 🔥 Recent Updates
+### 🔥 近期更新
 
-**August 14, 2025**: See our free course [here](https://academy.langchain.com/courses/deep-research-with-langgraph) (and course repo [here](https://github.com/langchain-ai/deep_research_from_scratch)) on building open deep research.
+**2025 年 8 月 14 日**：我们推出了关于构建开源深度研究的免费课程，请见[这里](https://academy.langchain.com/courses/deep-research-with-langgraph)（课程仓库见[这里](https://github.com/langchain-ai/deep_research_from_scratch)）。
 
-**August 7, 2025**: Added GPT-5 and updated the Deep Research Bench evaluation w/ GPT-5 results.
+**2025 年 8 月 7 日**：新增 GPT-5，并更新了包含 GPT-5 结果的 Deep Research Bench 评估。
 
-**August 2, 2025**: Achieved #6 ranking on the [Deep Research Bench Leaderboard](https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard) with an overall score of 0.4344. 
+**2025 年 8 月 2 日**：以 0.4344 的总分在 [Deep Research Bench 排行榜](https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard)上取得第 6 名。
 
-**July 30, 2025**: Read about the evolution from our original implementations to the current version in our [blog post](https://rlancemartin.github.io/2025/07/30/bitter_lesson/).
+**2025 年 7 月 30 日**：欢迎阅读我们的[博文](https://rlancemartin.github.io/2025/07/30/bitter_lesson/)，了解从最初的实现到当前版本的演进历程。
 
-**July 16, 2025**: Read more in our [blog](https://blog.langchain.com/open-deep-research/) and watch our [video](https://www.youtube.com/watch?v=agGiWUpxkhg) for a quick overview.
+**2025 年 7 月 16 日**：在我们的[博客](https://blog.langchain.com/open-deep-research/)中了解更多内容，并观看我们的[视频](https://www.youtube.com/watch?v=agGiWUpxkhg)快速概览。
 
-### 🚀 Quickstart
+### 🚀 快速开始
 
-1. Clone the repository and activate a virtual environment:
+1. 克隆仓库并激活虚拟环境：
 ```bash
 git clone https://github.com/langchain-ai/open_deep_research.git
 cd open_deep_research
 uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+source .venv/bin/activate  # Windows 下：.venv\Scripts\activate
 ```
 
-2. Install dependencies:
+2. 安装依赖：
 ```bash
 uv sync
-# or
+# 或
 uv pip install -r pyproject.toml
 ```
 
-3. Set up your `.env` file to customize the environment variables (for model selection, search tools, and other configuration settings):
+3. 创建 `.env` 文件以自定义环境变量（用于模型选择、搜索工具及其他配置项）：
 ```bash
 cp .env.example .env
 ```
 
-4. Launch agent with the LangGraph server locally:
+4. 在本地通过 LangGraph 服务器启动智能体：
 
 ```bash
-# Install dependencies and start the LangGraph server
+# 安装依赖并启动 LangGraph 服务器
 uvx --refresh --from "langgraph-cli[inmem]" --with-editable . --python 3.11 langgraph dev --allow-blocking
 ```
 
-This will open the LangGraph Studio UI in your browser.
+这将在浏览器中打开 LangGraph Studio UI。
 
 ```
 - 🚀 API: http://127.0.0.1:2024
@@ -55,95 +55,95 @@ This will open the LangGraph Studio UI in your browser.
 - 📚 API Docs: http://127.0.0.1:2024/docs
 ```
 
-Ask a question in the `messages` input field and click `Submit`. Select different configuration in the "Manage Assistants" tab.
+在 `messages` 输入框中提出问题，然后点击 `Submit`。可在 "Manage Assistants"（管理助手）标签页中选择不同的配置。
 
-### ⚙️ Configurations
+### ⚙️ 配置项
 
 #### LLM :brain:
 
-Open Deep Research supports a wide range of LLM providers via the [init_chat_model() API](https://python.langchain.com/docs/how_to/chat_models_universal_init/). It uses LLMs for a few different tasks. See the below model fields in the [configuration.py](https://github.com/langchain-ai/open_deep_research/blob/main/src/open_deep_research/configuration.py) file for more details. This can be accessed via the LangGraph Studio UI. 
+Open Deep Research 通过 [init_chat_model() API](https://python.langchain.com/docs/how_to/chat_models_universal_init/) 支持众多 LLM 提供商。它在若干不同任务中使用 LLM。有关更多细节，请参阅 [configuration.py](https://github.com/langchain-ai/open_deep_research/blob/main/src/open_deep_research/configuration.py) 文件中的下列模型字段。这些配置可通过 LangGraph Studio UI 进行访问。
 
-- **Summarization** (default: `openai:gpt-4.1-mini`): Summarizes search API results
-- **Research** (default: `openai:gpt-4.1`): Power the search agent
-- **Compression** (default: `openai:gpt-4.1`): Compresses research findings
-- **Final Report Model** (default: `openai:gpt-4.1`): Write the final report
+- **摘要**（默认：`openai:gpt-4.1-mini`）：对搜索 API 的结果进行摘要
+- **研究**（默认：`openai:gpt-4.1`）：驱动搜索智能体
+- **压缩**（默认：`openai:gpt-4.1`）：压缩研究发现
+- **最终报告模型**（默认：`openai:gpt-4.1`）：撰写最终报告
 
-> Note: the selected model will need to support [structured outputs](https://python.langchain.com/docs/integrations/chat/) and [tool calling](https://python.langchain.com/docs/how_to/tool_calling/).
+> 注意：所选模型需要支持[结构化输出](https://python.langchain.com/docs/integrations/chat/)和[工具调用](https://python.langchain.com/docs/how_to/tool_calling/)。
 
-> Note: For OpenRouter: Follow [this guide](https://github.com/langchain-ai/open_deep_research/issues/75#issuecomment-2811472408) and for local models via Ollama  see [setup instructions](https://github.com/langchain-ai/open_deep_research/issues/65#issuecomment-2743586318).
+> 注意：使用 OpenRouter 请遵循[此指南](https://github.com/langchain-ai/open_deep_research/issues/75#issuecomment-2811472408)；通过 Ollama 使用本地模型请参见[安装说明](https://github.com/langchain-ai/open_deep_research/issues/65#issuecomment-2743586318)。
 
-#### Search API :mag:
+#### 搜索 API :mag:
 
-Open Deep Research supports a wide range of search tools. By default it uses the [Tavily](https://www.tavily.com/) search API. Has full MCP compatibility and work native web search for Anthropic and OpenAI. See the `search_api` and `mcp_config` fields in the [configuration.py](https://github.com/langchain-ai/open_deep_research/blob/main/src/open_deep_research/configuration.py) file for more details. This can be accessed via the LangGraph Studio UI. 
+Open Deep Research 支持众多搜索工具。默认情况下它使用 [Tavily](https://www.tavily.com/) 搜索 API。它具备完整的 MCP 兼容性，并支持 Anthropic 和 OpenAI 的原生网络搜索。有关更多细节，请参阅 [configuration.py](https://github.com/langchain-ai/open_deep_research/blob/main/src/open_deep_research/configuration.py) 文件中的 `search_api` 和 `mcp_config` 字段。这些配置可通过 LangGraph Studio UI 进行访问。
 
-#### Other 
+#### 其他配置
 
-See the fields in the [configuration.py](https://github.com/langchain-ai/open_deep_research/blob/main/src/open_deep_research/configuration.py) for various other settings to customize the behavior of Open Deep Research. 
+请参阅 [configuration.py](https://github.com/langchain-ai/open_deep_research/blob/main/src/open_deep_research/configuration.py) 中的各个字段，了解可用于自定义 Open Deep Research 行为的其他设置。
 
-### 📊 Evaluation
+### 📊 评估
 
-Open Deep Research is configured for evaluation with [Deep Research Bench](https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard). This benchmark has 100 PhD-level research tasks (50 English, 50 Chinese), crafted by domain experts across 22 fields (e.g., Science & Tech, Business & Finance) to mirror real-world deep-research needs. It has 2 evaluation metrics, but the leaderboard is based on the RACE score. This uses LLM-as-a-judge (Gemini) to evaluate research reports against a golden set of reports compiled by experts across a set of metrics.
+Open Deep Research 已配置为使用 [Deep Research Bench](https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard) 进行评估。该基准包含 100 个博士级研究任务（50 个英文、50 个中文），由 22 个领域（如科学与技术、商业与金融）的领域专家精心设计，以贴近真实的深度研究需求。它有 2 个评估指标，但排行榜基于 RACE 分数。该指标使用 LLM 评审（Gemini），依据一组指标将研究报告与专家编制的黄金标准报告集进行对比评估。
 
-#### Usage
+#### 用法
 
-> Warning: Running across the 100 examples can cost ~$20-$100 depending on the model selection.
+> 警告：在全部 100 个示例上运行可能花费约 20 至 100 美元，具体取决于所选模型。
 
-The dataset is available on [LangSmith via this link](https://smith.langchain.com/public/c5e7a6ad-fdba-478c-88e6-3a388459ce8b/d). To kick off evaluation, run the following command:
+数据集可通过[此链接](https://smith.langchain.com/public/c5e7a6ad-fdba-478c-88e6-3a388459ce8b/d)在 LangSmith 上获取。要启动评估，请运行以下命令：
 
 ```bash
-# Run comprehensive evaluation on LangSmith datasets
+# 在 LangSmith 数据集上运行综合评估
 python tests/run_evaluate.py
 ```
 
-This will provide a link to a LangSmith experiment, which will have a name `YOUR_EXPERIMENT_NAME`. Once this is done, extract the results to a JSONL file that can be submitted to the Deep Research Bench.
+这会生成一个 LangSmith 实验的链接，实验名称为 `YOUR_EXPERIMENT_NAME`。完成后，将结果提取为 JSONL 文件，以便提交给 Deep Research Bench。
 
 ```bash
 python tests/extract_langsmith_data.py --project-name "YOUR_EXPERIMENT_NAME" --model-name "you-model-name" --dataset-name "deep_research_bench"
 ```
 
-This creates `tests/expt_results/deep_research_bench_model-name.jsonl` with the required format. Move the generated JSONL file to a local clone of the Deep Research Bench repository and follow their [Quick Start guide](https://github.com/Ayanami0730/deep_research_bench?tab=readme-ov-file#quick-start) for evaluation submission.
+这会创建符合所需格式的 `tests/expt_results/deep_research_bench_model-name.jsonl` 文件。将生成的 JSONL 文件移动到 Deep Research Bench 仓库的本地克隆中，并按照其[快速入门指南](https://github.com/Ayanami0730/deep_research_bench?tab=readme-ov-file#quick-start)提交评估。
 
-#### Results 
+#### 结果
 
-| Name | Commit | Summarization | Research | Compression | Total Cost | Total Tokens | RACE Score | Experiment |
+| 名称 | 提交 | 摘要 | 研究 | 压缩 | 总成本 | 总 token 数 | RACE 分数 | 实验 |
 |------|--------|---------------|----------|-------------|------------|--------------|------------|------------|
-| GPT-5 | [ca3951d](https://github.com/langchain-ai/open_deep_research/pull/168/commits) | openai:gpt-4.1-mini | openai:gpt-5 | openai:gpt-4.1 |  | 204,640,896 | 0.4943 | [Link](https://smith.langchain.com/o/ebbaf2eb-769b-4505-aca2-d11de10372a4/datasets/6e4766ca-613c-4bda-8bde-f64f0422bbf3/compare?selectedSessions=4d5941c8-69ce-4f3d-8b3e-e3c99dfbd4cc&baseline=undefined) |
-| Defaults | [6532a41](https://github.com/langchain-ai/open_deep_research/commit/6532a4176a93cc9bb2102b3d825dcefa560c85d9) | openai:gpt-4.1-mini | openai:gpt-4.1 | openai:gpt-4.1 | $45.98 | 58,015,332 | 0.4309 | [Link](https://smith.langchain.com/o/ebbaf2eb-769b-4505-aca2-d11de10372a4/datasets/6e4766ca-6[…]ons=cf4355d7-6347-47e2-a774-484f290e79bc&baseline=undefined) |
-| Claude Sonnet 4 | [f877ea9](https://github.com/langchain-ai/open_deep_research/pull/163/commits/f877ea93641680879c420ea991e998b47aab9bcc) | openai:gpt-4.1-mini | anthropic:claude-sonnet-4-20250514 | openai:gpt-4.1 | $187.09 | 138,917,050 | 0.4401 | [Link](https://smith.langchain.com/o/ebbaf2eb-769b-4505-aca2-d11de10372a4/datasets/6e4766ca-6[…]ons=04f6002d-6080-4759-bcf5-9a52e57449ea&baseline=undefined) |
-| Deep Research Bench Submission | [c0a160b](https://github.com/langchain-ai/open_deep_research/commit/c0a160b57a9b5ecd4b8217c3811a14d8eff97f72) | openai:gpt-4.1-nano | openai:gpt-4.1 | openai:gpt-4.1 | $87.83 | 207,005,549 | 0.4344 | [Link](https://smith.langchain.com/o/ebbaf2eb-769b-4505-aca2-d11de10372a4/datasets/6e4766ca-6[…]ons=e6647f74-ad2f-4cb9-887e-acb38b5f73c0&baseline=undefined) |
+| GPT-5 | [ca3951d](https://github.com/langchain-ai/open_deep_research/pull/168/commits) | openai:gpt-4.1-mini | openai:gpt-5 | openai:gpt-4.1 |  | 204,640,896 | 0.4943 | [链接](https://smith.langchain.com/o/ebbaf2eb-769b-4505-aca2-d11de10372a4/datasets/6e4766ca-613c-4bda-8bde-f64f0422bbf3/compare?selectedSessions=4d5941c8-69ce-4f3d-8b3e-e3c99dfbd4cc&baseline=undefined) |
+| 默认配置 | [6532a41](https://github.com/langchain-ai/open_deep_research/commit/6532a4176a93cc9bb2102b3d825dcefa560c85d9) | openai:gpt-4.1-mini | openai:gpt-4.1 | openai:gpt-4.1 | $45.98 | 58,015,332 | 0.4309 | [链接](https://smith.langchain.com/o/ebbaf2eb-769b-4505-aca2-d11de10372a4/datasets/6e4766ca-6[…]ons=cf4355d7-6347-47e2-a774-484f290e79bc&baseline=undefined) |
+| Claude Sonnet 4 | [f877ea9](https://github.com/langchain-ai/open_deep_research/pull/163/commits/f877ea93641680879c420ea991e998b47aab9bcc) | openai:gpt-4.1-mini | anthropic:claude-sonnet-4-20250514 | openai:gpt-4.1 | $187.09 | 138,917,050 | 0.4401 | [链接](https://smith.langchain.com/o/ebbaf2eb-769b-4505-aca2-d11de10372a4/datasets/6e4766ca-6[…]ons=04f6002d-6080-4759-bcf5-9a52e57449ea&baseline=undefined) |
+| Deep Research Bench 提交 | [c0a160b](https://github.com/langchain-ai/open_deep_research/commit/c0a160b57a9b5ecd4b8217c3811a14d8eff97f72) | openai:gpt-4.1-nano | openai:gpt-4.1 | openai:gpt-4.1 | $87.83 | 207,005,549 | 0.4344 | [链接](https://smith.langchain.com/o/ebbaf2eb-769b-4505-aca2-d11de10372a4/datasets/6e4766ca-6[…]ons=e6647f74-ad2f-4cb9-887e-acb38b5f73c0&baseline=undefined) |
 
-### 🚀 Deployments and Usage
+### 🚀 部署与使用
 
 #### LangGraph Studio
 
-Follow the [quickstart](#-quickstart) to start LangGraph server locally and test the agent out on LangGraph Studio.
+按照[快速开始](#-快速开始)在本地启动 LangGraph 服务器，并在 LangGraph Studio 上试用该智能体。
 
-#### Hosted deployment
- 
-You can easily deploy to [LangGraph Platform](https://langchain-ai.github.io/langgraph/concepts/#deployment-options). 
+#### 托管部署
+
+您可以轻松部署到 [LangGraph Platform](https://langchain-ai.github.io/langgraph/concepts/#deployment-options)。
 
 #### Open Agent Platform
 
-Open Agent Platform (OAP) is a UI from which non-technical users can build and configure their own agents. OAP is great for allowing users to configure the Deep Researcher with different MCP tools and search APIs that are best suited to their needs and the problems that they want to solve.
+Open Agent Platform（OAP）是一个面向非技术用户的 UI，让他们可以构建并配置自己的智能体。OAP 非常适合让用户使用最适合自身需求与待解决问题的 MCP 工具和搜索 API 来配置 Deep Researcher。
 
-We've deployed Open Deep Research to our public demo instance of OAP. All you need to do is add your API Keys, and you can test out the Deep Researcher for yourself! Try it out [here](https://oap.langchain.com)
+我们已将 Open Deep Research 部署到我们的 OAP 公开演示实例。您只需添加自己的 API 密钥，即可亲自试用 Deep Researcher！请到[这里](https://oap.langchain.com)体验。
 
-You can also deploy your own instance of OAP, and make your own custom agents (like Deep Researcher) available on it to your users.
-1. [Deploy Open Agent Platform](https://docs.oap.langchain.com/quickstart)
-2. [Add Deep Researcher to OAP](https://docs.oap.langchain.com/setup/agents)
+您也可以部署自己的 OAP 实例，并在其上向您的用户提供您自己的自定义智能体（如 Deep Researcher）：
+1. [部署 Open Agent Platform](https://docs.oap.langchain.com/quickstart)
+2. [将 Deep Researcher 添加到 OAP](https://docs.oap.langchain.com/setup/agents)
 
-### Legacy Implementations 🏛️
+### 旧版实现 🏛️
 
-The `src/legacy/` folder contains two earlier implementations that provide alternative approaches to automated research. They are less performant than the current implementation, but provide alternative ideas understanding the different approaches to deep research.
+`src/legacy/` 文件夹包含两个较早的实现，提供了自动化研究的替代方案。它们的性能不及当前实现，但为理解深度研究的不同方法提供了另类思路。
 
-#### 1. Workflow Implementation (`legacy/graph.py`)
-- **Plan-and-Execute**: Structured workflow with human-in-the-loop planning
-- **Sequential Processing**: Creates sections one by one with reflection
-- **Interactive Control**: Allows feedback and approval of report plans
-- **Quality Focused**: Emphasizes accuracy through iterative refinement
+#### 1. 工作流实现（`legacy/graph.py`）
+- **规划与执行（Plan-and-Execute）**：带人工介入规划的结构化工作流
+- **顺序处理**：逐一创建章节并伴随反思
+- **交互式控制**：允许对报告规划进行反馈与审批
+- **注重质量**：通过迭代完善来强调准确性
 
-#### 2. Multi-Agent Implementation (`legacy/multi_agent.py`)  
-- **Supervisor-Researcher Architecture**: Coordinated multi-agent system
-- **Parallel Processing**: Multiple researchers work simultaneously
-- **Speed Optimized**: Faster report generation through concurrency
-- **MCP Support**: Extensive Model Context Protocol integration
+#### 2. 多智能体实现（`legacy/multi_agent.py`）
+- **监督者-研究者架构**：协同工作的多智能体系统
+- **并行处理**：多个研究者同时工作
+- **速度优化**：通过并发加速报告生成
+- **MCP 支持**：广泛的 Model Context Protocol 集成
