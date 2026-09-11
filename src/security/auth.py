@@ -12,40 +12,40 @@ supabase: Optional[Client] = None
 if supabase_url and supabase_key:
     supabase = create_client(supabase_url, supabase_key)
 
-# The "Auth" object is a container that LangGraph will use to mark our authentication function
+# "Auth" 对象是一个容器，LangGraph 会用它来标记我们的身份验证函数
 auth = Auth()
 
 
-# The `authenticate` decorator tells LangGraph to call this function as middleware
-# for every request. This will determine whether the request is allowed or not
+# `authenticate` 装饰器告诉 LangGraph 将此函数作为中间件，
+# 对每个请求调用。由它决定请求是否被允许
 @auth.authenticate
 async def get_current_user(authorization: str | None) -> Auth.types.MinimalUserDict:
-    """Check if the user's JWT token is valid using Supabase."""
+    """使用 Supabase 检查用户的 JWT 令牌是否有效。"""
 
-    # Ensure we have authorization header
+    # 确保提供了 Authorization 请求头
     if not authorization:
         raise Auth.exceptions.HTTPException(
-            status_code=401, detail="Authorization header missing"
+            status_code=401, detail="缺少 Authorization 请求头"
         )
 
-    # Parse the authorization header
+    # 解析 Authorization 请求头
     try:
         scheme, token = authorization.split()
         assert scheme.lower() == "bearer"
     except (ValueError, AssertionError):
         raise Auth.exceptions.HTTPException(
-            status_code=401, detail="Invalid authorization header format"
+            status_code=401, detail="Authorization 请求头格式无效"
         )
 
-    # Ensure Supabase client is initialized
+    # 确保 Supabase 客户端已初始化
     if not supabase:
         raise Auth.exceptions.HTTPException(
-            status_code=500, detail="Supabase client not initialized"
+            status_code=500, detail="Supabase 客户端未初始化"
         )
 
     try:
-        # Verify the JWT token with Supabase using asyncio.to_thread to avoid blocking
-        # This will decode and verify the JWT token in a separate thread
+        # 使用 Supabase 验证 JWT 令牌，借助 asyncio.to_thread 避免阻塞
+        # 这将在单独的线程中解码并验证 JWT 令牌
         async def verify_token() -> dict[str, Any]:
             response = await asyncio.to_thread(supabase.auth.get_user, token)
             return response
@@ -55,17 +55,17 @@ async def get_current_user(authorization: str | None) -> Auth.types.MinimalUserD
 
         if not user:
             raise Auth.exceptions.HTTPException(
-                status_code=401, detail="Invalid token or user not found"
+                status_code=401, detail="令牌无效或未找到用户"
             )
 
-        # Return user info if valid
+        # 若有效则返回用户信息
         return {
             "identity": user.id,
         }
     except Exception as e:
-        # Handle any errors from Supabase
+        # 处理来自 Supabase 的任何错误
         raise Auth.exceptions.HTTPException(
-            status_code=401, detail=f"Authentication error: {str(e)}"
+            status_code=401, detail=f"身份验证错误：{str(e)}"
         )
 
 
@@ -75,18 +75,18 @@ async def on_thread_create(
     ctx: Auth.types.AuthContext,
     value: Auth.types.on.threads.create.value,
 ):
-    """Add owner when creating threads.
+    """创建线程时添加所有者。
 
-    This handler runs when creating new threads and does two things:
-    1. Sets metadata on the thread being created to track ownership
-    2. Returns a filter that ensures only the creator can access it
+    此处理器在创建新线程时运行，做两件事：
+    1. 在正在创建的线程上设置元数据以跟踪所有权
+    2. 返回一个过滤器，确保只有创建者才能访问该线程
     """
 
     if isinstance(ctx.user, StudioUser):
         return
 
-    # Add owner metadata to the thread being created
-    # This metadata is stored with the thread and persists
+    # 为正在创建的线程添加所有者元数据
+    # 该元数据随线程存储并持久保留
     metadata = value.setdefault("metadata", {})
     metadata["owner"] = ctx.user.identity
 
@@ -99,11 +99,11 @@ async def on_thread_read(
     ctx: Auth.types.AuthContext,
     value: Auth.types.on.threads.read.value,
 ):
-    """Only let users read their own threads.
+    """仅允许用户读取自己的线程。
 
-    This handler runs on read operations. We don't need to set
-    metadata since the thread already exists - we just need to
-    return a filter to ensure users can only see their own threads.
+    此处理器在读取操作时运行。由于线程已存在，我们无需设置
+    元数据 - 只需返回一个过滤器，
+    确保用户只能看到自己的线程。
     """
     if isinstance(ctx.user, StudioUser):
         return
@@ -119,8 +119,8 @@ async def on_assistants_create(
     if isinstance(ctx.user, StudioUser):
         return
 
-    # Add owner metadata to the assistant being created
-    # This metadata is stored with the assistant and persists
+    # 为正在创建的助手添加所有者元数据
+    # 该元数据随助手存储并持久保留
     metadata = value.setdefault("metadata", {})
     metadata["owner"] = ctx.user.identity
 
@@ -133,11 +133,11 @@ async def on_assistants_read(
     ctx: Auth.types.AuthContext,
     value: Auth.types.on.assistants.read.value,
 ):
-    """Only let users read their own assistants.
+    """仅允许用户读取自己的助手。
 
-    This handler runs on read operations. We don't need to set
-    metadata since the assistant already exists - we just need to
-    return a filter to ensure users can only see their own assistants.
+    此处理器在读取操作时运行。由于助手已存在，我们无需设置
+    元数据 - 只需返回一个过滤器，
+    确保用户只能看到自己的助手。
     """
 
     if isinstance(ctx.user, StudioUser):
@@ -151,6 +151,6 @@ async def authorize_store(ctx: Auth.types.AuthContext, value: dict):
     if isinstance(ctx.user, StudioUser):
         return
 
-    # The "namespace" field for each store item is a tuple you can think of as the directory of an item.
+    # 每个存储项的 "namespace" 字段是一个元组，可以将其理解为该项所在的目录。
     namespace: tuple = value["namespace"]
-    assert namespace[0] == ctx.user.identity, "Not authorized"
+    assert namespace[0] == ctx.user.identity, "未授权"

@@ -10,139 +10,139 @@ from rich.rule import Rule
 console = Console()
 
 """
-Simplified test runner for Open Deep Research with rich console output.
+Open Deep Research 的简化测试运行器，带 rich 控制台输出。
 
-Example usage:
-python tests/run_test.py --all  # Run all agents with rich output
+示例用法：
+python tests/run_test.py --all  # 以 rich 输出运行所有智能体的测试
 python tests/run_test.py --agent multi_agent --supervisor-model "anthropic:claude-3-7-sonnet-latest"
 python tests/run_test.py --agent graph --search-api tavily
 """
 
 def main():
-    # Parse command line arguments
-    parser = argparse.ArgumentParser(description="Run tests for Open Deep Research with rich console output")
-    parser.add_argument("--rich-output", action="store_true", default=True, help="Show rich output in terminal (default: True)")
-    parser.add_argument("--experiment-name", help="Name for the LangSmith experiment")
-    parser.add_argument("--agent", choices=["multi_agent", "graph"], help="Run tests for a specific agent")
-    parser.add_argument("--all", action="store_true", help="Run tests for all agents")
+    # 解析命令行参数
+    parser = argparse.ArgumentParser(description="以 rich 控制台输出运行 Open Deep Research 测试")
+    parser.add_argument("--rich-output", action="store_true", default=True, help="在终端显示 rich 输出（默认：True）")
+    parser.add_argument("--experiment-name", help="LangSmith 实验的名称")
+    parser.add_argument("--agent", choices=["multi_agent", "graph"], help="为指定智能体运行测试")
+    parser.add_argument("--all", action="store_true", help="为所有智能体运行测试")
     
-    # Model configuration options
-    parser.add_argument("--supervisor-model", help="Model for supervisor agent (e.g., 'anthropic:claude-3-7-sonnet-latest')")
-    parser.add_argument("--researcher-model", help="Model for researcher agent (e.g., 'anthropic:claude-3-5-sonnet-latest')")
-    parser.add_argument("--planner-provider", help="Provider for planner model (e.g., 'anthropic')")
-    parser.add_argument("--planner-model", help="Model for planner in graph-based agent (e.g., 'claude-3-7-sonnet-latest')")
-    parser.add_argument("--writer-provider", help="Provider for writer model (e.g., 'anthropic')")
-    parser.add_argument("--writer-model", help="Model for writer in graph-based agent (e.g., 'claude-3-5-sonnet-latest')")
-    parser.add_argument("--eval-model", help="Model for evaluating report quality (default: openai:claude-3-7-sonnet-latest)")
-    parser.add_argument("--max-search-depth", help="Maximum search depth for graph agent")
+    # 模型配置选项
+    parser.add_argument("--supervisor-model", help="监督者智能体的模型（例如 'anthropic:claude-3-7-sonnet-latest'）")
+    parser.add_argument("--researcher-model", help="研究员智能体的模型（例如 'anthropic:claude-3-5-sonnet-latest'）")
+    parser.add_argument("--planner-provider", help="规划者模型的提供商（例如 'anthropic'）")
+    parser.add_argument("--planner-model", help="基于 graph 的智能体中规划者的模型（例如 'claude-3-7-sonnet-latest'）")
+    parser.add_argument("--writer-provider", help="撰写者模型的提供商（例如 'anthropic'）")
+    parser.add_argument("--writer-model", help="基于 graph 的智能体中撰写者的模型（例如 'claude-3-5-sonnet-latest'）")
+    parser.add_argument("--eval-model", help="用于评估报告质量的模型（默认：openai:claude-3-7-sonnet-latest）")
+    parser.add_argument("--max-search-depth", help="graph 智能体的最大搜索深度")
     
-    # Search API configuration
+    # 搜索 API 配置
     parser.add_argument("--search-api", choices=["tavily", "duckduckgo"], 
-                        help="Search API to use for content retrieval")
+                        help="用于内容检索的搜索 API")
     
     args = parser.parse_args()
     
-    # Define available agents and their test configurations
+    # 定义可用的智能体及其测试配置
     agents = {
         "multi_agent": {
             "test": "tests/test_report_quality.py::test_response_criteria_evaluation",
             "topic": "Model Context Protocol",
-            "description": "Testing multi_agent with a full MCP report",
+            "description": "使用完整的 MCP 报告测试 multi_agent",
             "needs_research_agent_param": True,
         },
         "graph": {
             "test": "tests/test_report_quality.py::test_response_criteria_evaluation",
             "topic": "Model Context Protocol", 
-            "description": "Testing graph agent with a full MCP report",
+            "description": "使用完整的 MCP 报告测试 graph 智能体",
             "needs_research_agent_param": True,
         }
     }
     
-    # Determine which agents to test
+    # 确定要测试哪些智能体
     if args.agent:
         if args.agent in agents:
             agents_to_test = [args.agent]
         else:
-            console.print(f"[red]Error: Unknown agent '{args.agent}'[/red]")
-            console.print(f"Available agents: {', '.join(agents.keys())}")
+            console.print(f"[red]错误：未知的智能体 '{args.agent}'[/red]")
+            console.print(f"可用的智能体：{', '.join(agents.keys())}")
             return 1
     elif args.all:
         agents_to_test = list(agents.keys())
     else:
-        # Default to testing all agents
+        # 默认测试所有智能体
         agents_to_test = list(agents.keys())
     
-    # Run tests for each agent
+    # 为每个智能体运行测试
     for agent in agents_to_test:
-        console.print(Rule(f"[bold blue]Testing {agent.upper()} Agent[/bold blue]"))
+        console.print(Rule(f"[bold blue]正在测试 {agent.upper()} 智能体[/bold blue]"))
         
         agent_config = agents[agent]
         
-        # Set up LangSmith environment for this agent
+        # 为该智能体设置 LangSmith 环境
         project_name = f"ODR: Pytest"
         os.environ["LANGSMITH_PROJECT"] = project_name
         os.environ["LANGSMITH_TEST_SUITE"] = project_name
         
-        # Ensure tracing is enabled
+        # 确保已启用追踪
         os.environ["LANGCHAIN_TRACING_V2"] = "true"
         
-        # Set up experiment name
+        # 设置实验名称
         experiment_name = args.experiment_name if args.experiment_name else f"{agent_config['topic']}"
         os.environ["LANGSMITH_EXPERIMENT"] = experiment_name
         
-        console.print(f"[dim]Project: {project_name}[/dim]")
-        console.print(f"[dim]Test: {agent_config['description']}[/dim]")
-        console.print(f"[dim]Experiment: {experiment_name}[/dim]")
+        console.print(f"[dim]项目：{project_name}[/dim]")
+        console.print(f"[dim]测试：{agent_config['description']}[/dim]")
+        console.print(f"[dim]实验：{experiment_name}[/dim]")
         
-        # Run the test
-        console.print(f"\n[green]Running test for {agent} agent...[/green]")
+        # 运行测试
+        console.print(f"\n[green]正在为 {agent} 智能体运行测试...[/green]")
         run_test(agent, agent_config, args)
     
-    console.print(Rule("[bold green]All tests complete[/bold green]"))
+    console.print(Rule("[bold green]所有测试已完成[/bold green]"))
 
 def run_test(agent, agent_config, args):
-    """Run the pytest with rich console formatting."""
-    # Base pytest options (added -s to disable output capturing)
+    """以 rich 控制台格式运行 pytest。"""
+    # pytest 基础选项（添加 -s 以禁用输出捕获）
     base_pytest_options = ["-v", "-s", "--disable-warnings", "--langsmith-output"]
     
-    # Build the command
+    # 构建命令
     cmd = ["python", "-m", "pytest", agent_config["test"]] + base_pytest_options
     
-    # Add research agent parameter if needed
+    # 如有需要，添加研究智能体参数
     if agent_config["needs_research_agent_param"]:
         cmd.append(f"--research-agent={agent}")
     
-    # Add model configurations if provided
+    # 如提供了模型配置则添加
     add_model_configs(cmd, args)
     
-    # Display command in a nice panel
+    # 在面板中美观地展示命令
     console.print(Panel(
-        f"[bold]Running Command:[/bold]\n[dim]{' '.join(cmd)}[/dim]",
+        f"[bold]正在运行命令：[/bold]\n[dim]{' '.join(cmd)}[/dim]",
         style="blue",
-        title="pytest execution"
+        title="pytest 执行"
     ))
     
-    # Run the command with real-time output (no capture)
-    console.print(f"\n[yellow]Starting test execution...[/yellow]\n")
+    # 运行命令并实时输出（不捕获输出）
+    console.print(f"\n[yellow]开始执行测试...[/yellow]\n")
     result = subprocess.run(cmd)
     
-    # Display results with rich formatting
-    console.print(f"\n[yellow]Test execution completed.[/yellow]")
+    # 以 rich 格式展示结果
+    console.print(f"\n[yellow]测试执行完成。[/yellow]")
     if result.returncode == 0:
         console.print(Panel(
-            f"[bold green]✅ Test for {agent} PASSED[/bold green]",
+            f"[bold green]✅ {agent} 智能体的测试已通过[/bold green]",
             style="green",
-            title="Test Result"
+            title="测试结果"
         ))
     else:
         console.print(Panel(
-            f"[bold red]❌ Test for {agent} FAILED[/bold red]\n[red]Return code: {result.returncode}[/red]",
+            f"[bold red]❌ {agent} 智能体的测试失败[/bold red]\n[red]返回码：{result.returncode}[/red]",
             style="red",
-            title="Test Result"
+            title="测试结果"
         ))
 
 def add_model_configs(cmd, args):
-    """Add model configuration arguments to command."""
+    """向命令添加模型配置参数。"""
     if args.supervisor_model:
         cmd.append(f"--supervisor-model={args.supervisor_model}")
     if args.researcher_model:

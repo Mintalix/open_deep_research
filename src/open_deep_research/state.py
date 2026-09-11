@@ -1,4 +1,4 @@
-"""Graph state definitions and data structures for the Deep Research agent."""
+"""深度研究智能体的图状态定义与数据结构。"""
 
 import operator
 from typing import Annotated, Optional
@@ -10,60 +10,60 @@ from typing_extensions import TypedDict
 
 
 ###################
-# Structured Outputs
+# 结构化输出
 ###################
 class ConductResearch(BaseModel):
-    """Call this tool to conduct research on a specific topic."""
+    """调用此工具以针对特定主题开展研究。"""
     research_topic: str = Field(
-        description="The topic to research. Should be a single topic, and should be described in high detail (at least a paragraph).",
+        description="要研究的主题。应为单一主题，并需详细描述（至少一段话）。",
     )
 
 class ResearchComplete(BaseModel):
-    """Call this tool to indicate that the research is complete."""
+    """调用此工具以表明研究已完成。"""
 
 class Summary(BaseModel):
-    """Research summary with key findings."""
+    """包含关键发现的研究摘要。"""
     
     summary: str
     key_excerpts: str
 
 class ClarifyWithUser(BaseModel):
-    """Model for user clarification requests."""
+    """用于向用户请求澄清的模型。"""
     
     need_clarification: bool = Field(
-        description="Whether the user needs to be asked a clarifying question.",
+        description="是否需要向用户提出澄清性问题。",
     )
     question: str = Field(
-        description="A question to ask the user to clarify the report scope",
+        description="用于向用户澄清报告范围的问题",
     )
     verification: str = Field(
-        description="Verify message that we will start research after the user has provided the necessary information.",
+        description="确认信息：在用户提供必要信息后，我们将开始研究。",
     )
 
 class ResearchQuestion(BaseModel):
-    """Research question and brief for guiding research."""
+    """用于引导研究的研究问题与简报。"""
     
     research_brief: str = Field(
-        description="A research question that will be used to guide the research.",
+        description="将用于引导研究的研究问题。",
     )
 
 
 ###################
-# State Definitions
+# 状态定义
 ###################
 
 def override_reducer(current_value, new_value):
-    """Reducer function that allows overriding values in state."""
+    """允许覆盖状态值的归约器函数。"""
     if isinstance(new_value, dict) and new_value.get("type") == "override":
         return new_value.get("value", new_value)
     else:
         return operator.add(current_value, new_value)
     
 class AgentInputState(MessagesState):
-    """InputState is only 'messages'."""
+    """输入状态仅包含 messages 字段。"""
 
 class AgentState(MessagesState):
-    """Main agent state containing messages and research data."""
+    """主智能体状态，包含消息与研究数据。"""
     
     supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
     research_brief: Optional[str]
@@ -72,7 +72,7 @@ class AgentState(MessagesState):
     final_report: str
 
 class SupervisorState(TypedDict):
-    """State for the supervisor that manages research tasks."""
+    """管理研究任务的监督者状态。"""
     
     supervisor_messages: Annotated[list[MessageLikeRepresentation], override_reducer]
     research_brief: str
@@ -81,7 +81,7 @@ class SupervisorState(TypedDict):
     raw_notes: Annotated[list[str], override_reducer] = []
 
 class ResearcherState(TypedDict):
-    """State for individual researchers conducting research."""
+    """执行研究的各研究员的状态。"""
     
     researcher_messages: Annotated[list[MessageLikeRepresentation], operator.add]
     tool_call_iterations: int = 0
@@ -90,7 +90,7 @@ class ResearcherState(TypedDict):
     raw_notes: Annotated[list[str], override_reducer] = []
 
 class ResearcherOutputState(BaseModel):
-    """Output state from individual researchers."""
+    """各研究员的输出状态。"""
     
     compressed_research: str
     raw_notes: Annotated[list[str], override_reducer] = []

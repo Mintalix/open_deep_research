@@ -45,7 +45,7 @@ from legacy.prompts import SUMMARIZATION_PROMPT
 
 def get_config_value(value):
     """
-    Helper function to handle string, dict, and enum cases of configuration values
+    辅助函数,用于处理配置值为字符串、字典或枚举的情况
     """
     if isinstance(value, str):
         return value
@@ -56,34 +56,34 @@ def get_config_value(value):
 
 def get_search_params(search_api: str, search_api_config: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     """
-    Filters the search_api_config dictionary to include only parameters accepted by the specified search API.
+    过滤 search_api_config 字典,仅保留指定搜索 API 接受的参数。
 
     Args:
-        search_api (str): The search API identifier (e.g., "exa", "tavily").
-        search_api_config (Optional[Dict[str, Any]]): The configuration dictionary for the search API.
+        search_api (str): 搜索 API 的标识符(例如 "exa"、"tavily")。
+        search_api_config (Optional[Dict[str, Any]]): 该搜索 API 的配置字典。
 
     Returns:
-        Dict[str, Any]: A dictionary of parameters to pass to the search function.
+        Dict[str, Any]: 要传给搜索函数的参数字典。
     """
-    # Define accepted parameters for each search API
+    # 定义各搜索 API 接受的参数
     SEARCH_API_PARAMS = {
         "exa": ["max_characters", "num_results", "include_domains", "exclude_domains", "subpages"],
         "tavily": ["max_results", "topic"],
-        "perplexity": [],  # Perplexity accepts no additional parameters
+        "perplexity": [],  # Perplexity 不接受额外参数
         "arxiv": ["load_max_docs", "get_full_documents", "load_all_available_meta"],
         "pubmed": ["top_k_results", "email", "api_key", "doc_content_chars_max"],
         "linkup": ["depth"],
         "googlesearch": ["max_results"],
     }
 
-    # Get the list of accepted parameters for the given search API
+    # 获取给定搜索 API 接受的参数列表
     accepted_params = SEARCH_API_PARAMS.get(search_api, [])
 
-    # If no config provided, return an empty dict
+    # 如果未提供配置,则返回空字典
     if not search_api_config:
         return {}
 
-    # Filter the config to only include accepted parameters
+    # 过滤配置,仅保留接受的参数
     return {k: v for k, v in search_api_config.items() if k in accepted_params}
 
 def deduplicate_and_format_sources(
@@ -93,13 +93,13 @@ def deduplicate_and_format_sources(
     deduplication_strategy: Literal["keep_first", "keep_last"] = "keep_first"
 ):
     """
-    Takes a list of search responses and formats them into a readable string.
-    Limits the raw_content to approximately max_tokens_per_source tokens.
+    接收一组搜索响应并将其格式化为可读字符串。
+    将 raw_content 限制在约 max_tokens_per_source 个 token 以内。
  
     Args:
-        search_responses: List of search response dicts, each containing:
+        search_responses: 搜索响应字典的列表,每个字典包含:
             - query: str
-            - results: List of dicts with fields:
+            - results: 字典列表,包含以下字段:
                 - title: str
                 - url: str
                 - content: str
@@ -107,16 +107,16 @@ def deduplicate_and_format_sources(
                 - raw_content: str|None
         max_tokens_per_source: int
         include_raw_content: bool
-        deduplication_strategy: Whether to keep the first or last search result for each unique URL
+        deduplication_strategy: 对每个唯一 URL 保留第一条还是最后一条搜索结果
     Returns:
-        str: Formatted string with deduplicated sources
+        str: 包含去重后来源的格式化字符串
     """
-     # Collect all results
+     # 收集所有结果
     sources_list = []
     for response in search_response:
         sources_list.extend(response['results'])
 
-    # Deduplicate by URL
+    # 按 URL 去重
     if deduplication_strategy == "keep_first":
         unique_sources = {}
         for source in sources_list:
@@ -125,46 +125,46 @@ def deduplicate_and_format_sources(
     elif deduplication_strategy == "keep_last":
         unique_sources = {source['url']: source for source in sources_list}
     else:
-        raise ValueError(f"Invalid deduplication strategy: {deduplication_strategy}")
+        raise ValueError(f"无效的去重策略: {deduplication_strategy}")
 
-    # Format output
-    formatted_text = "Content from sources:\n"
+    # 格式化输出
+    formatted_text = "来自以下来源的内容:\n"
     for i, source in enumerate(unique_sources.values(), 1):
-        formatted_text += f"{'='*80}\n"  # Clear section separator
-        formatted_text += f"Source: {source['title']}\n"
-        formatted_text += f"{'-'*80}\n"  # Subsection separator
+        formatted_text += f"{'='*80}\n"  # 清晰的章节分隔符
+        formatted_text += f"来源: {source['title']}\n"
+        formatted_text += f"{'-'*80}\n"  # 子章节分隔符
         formatted_text += f"URL: {source['url']}\n===\n"
-        formatted_text += f"Most relevant content from source: {source['content']}\n===\n"
+        formatted_text += f"来源中最相关的内容: {source['content']}\n===\n"
         if include_raw_content:
-            # Using rough estimate of 4 characters per token
+            # 按每个 token 约 4 个字符粗略估算
             char_limit = max_tokens_per_source * 4
-            # Handle None raw_content
+            # 处理 raw_content 为 None 的情况
             raw_content = source.get('raw_content', '')
             if raw_content is None:
                 raw_content = ''
-                print(f"Warning: No raw_content found for source {source['url']}")
+                print(f"警告: 来源 {source['url']} 未找到 raw_content")
             if len(raw_content) > char_limit:
-                raw_content = raw_content[:char_limit] + "... [truncated]"
-            formatted_text += f"Full source content limited to {max_tokens_per_source} tokens: {raw_content}\n\n"
-        formatted_text += f"{'='*80}\n\n" # End section separator
+                raw_content = raw_content[:char_limit] + "... [已截断]"
+            formatted_text += f"来源全文(限制为 {max_tokens_per_source} 个 token): {raw_content}\n\n"
+        formatted_text += f"{'='*80}\n\n" # 章节结束分隔符
                 
     return formatted_text.strip()
 
 def format_sections(sections: list[Section]) -> str:
-    """ Format a list of sections into a string """
+    """ 将章节列表格式化为字符串 """
     formatted_str = ""
     for idx, section in enumerate(sections, 1):
         formatted_str += f"""
 {'='*60}
-Section {idx}: {section.name}
+章节 {idx}: {section.name}
 {'='*60}
-Description:
+描述:
 {section.description}
-Requires Research: 
+是否需要研究:
 {section.research}
 
-Content:
-{section.content if section.content else '[Not yet written]'}
+内容:
+{section.content if section.content else '[尚未撰写]'}
 
 """
     return formatted_str
@@ -172,28 +172,28 @@ Content:
 @traceable
 async def tavily_search_async(search_queries, max_results: int = 5, topic: Literal["general", "news", "finance"] = "general", include_raw_content: bool = True):
     """
-    Performs concurrent web searches with the Tavily API
+    使用 Tavily API 并发执行网页搜索
 
     Args:
-        search_queries (List[str]): List of search queries to process
-        max_results (int): Maximum number of results to return
-        topic (Literal["general", "news", "finance"]): Topic to filter results by
-        include_raw_content (bool): Whether to include raw content in the results
+        search_queries (List[str]): 要处理的搜索查询列表
+        max_results (int): 返回结果的最大数量
+        topic (Literal["general", "news", "finance"]): 用于筛选结果的主题
+        include_raw_content (bool): 结果中是否包含原始内容
 
     Returns:
-            List[dict]: List of search responses from Tavily API:
+            List[dict]: 来自 Tavily API 的搜索响应列表:
                 {
                     'query': str,
                     'follow_up_questions': None,      
                     'answer': None,
                     'images': list,
-                    'results': [                     # List of search results
+                    'results': [                     # 搜索结果列表
                         {
-                            'title': str,            # Title of the webpage
-                            'url': str,              # URL of the result
-                            'content': str,          # Summary/snippet of content
-                            'score': float,          # Relevance score
-                            'raw_content': str|None  # Full page content if available
+                            'title': str,            # 网页标题
+                            'url': str,              # 结果的 URL
+                            'content': str,          # 内容摘要/片段
+                            'score': float,          # 相关性得分
+                            'raw_content': str|None  # 完整页面内容(如有)
                         },
                         ...
                     ]
@@ -211,28 +211,28 @@ async def tavily_search_async(search_queries, max_results: int = 5, topic: Liter
                 )
             )
 
-    # Execute all searches concurrently
+    # 并发执行所有搜索
     search_docs = await asyncio.gather(*search_tasks)
     return search_docs
 
 @traceable
 async def azureaisearch_search_async(search_queries: list[str], max_results: int = 5, topic: str = "general", include_raw_content: bool = True) -> list[dict]:
     """
-    Performs concurrent web searches using the Azure AI Search API.
+    使用 Azure AI Search API 并发执行网页搜索。
 
     Args:
-        search_queries (List[str]): list of search queries to process
-        max_results (int): maximum number of results to return for each query
-        topic (str): semantic topic filter for the search.
+        search_queries (List[str]): 要处理的搜索查询列表
+        max_results (int): 每个查询返回结果的最大数量
+        topic (str): 搜索的语义主题过滤器。
         include_raw_content (bool)
 
     Returns:
-        List[dict]: list of search responses from Azure AI Search API, one per query.
+        List[dict]: 来自 Azure AI Search API 的搜索响应列表,每个查询一条。
     """
-    # configure and create the Azure Search client
-    # ensure all environment variables are set
+    # 配置并创建 Azure Search 客户端
+    # 确保所有环境变量已设置
     if not all(var in os.environ for var in ["AZURE_AI_SEARCH_ENDPOINT", "AZURE_AI_SEARCH_INDEX_NAME", "AZURE_AI_SEARCH_API_KEY"]):
-        raise ValueError("Missing required environment variables for Azure Search API which are: AZURE_AI_SEARCH_ENDPOINT, AZURE_AI_SEARCH_INDEX_NAME, AZURE_AI_SEARCH_API_KEY")
+        raise ValueError("缺少 Azure Search API 所需的环境变量:AZURE_AI_SEARCH_ENDPOINT、AZURE_AI_SEARCH_INDEX_NAME、AZURE_AI_SEARCH_API_KEY")
     endpoint = os.getenv("AZURE_AI_SEARCH_ENDPOINT")
     index_name = os.getenv("AZURE_AI_SEARCH_INDEX_NAME")
     credential = AzureKeyCredential(os.getenv("AZURE_AI_SEARCH_API_KEY"))
@@ -241,7 +241,7 @@ async def azureaisearch_search_async(search_queries: list[str], max_results: int
 
     async with AsyncAzureAISearchClient(endpoint, index_name, credential) as client:
         async def do_search(query: str) -> dict:
-            # search query 
+            # 搜索查询
             paged = await client.search(
                 search_text=query,
                 vector_queries=[{
@@ -255,9 +255,9 @@ async def azureaisearch_search_async(search_queries: list[str], max_results: int
                 select=["url", "title", "chunk", "creationTime", "lastModifiedTime"],
                 top=max_results,
             )
-            # async iterator to get all results
+            # 异步迭代器,获取所有结果
             items = [doc async for doc in paged]
-            # Umwandlung in einfaches Dict-Format
+            # 转换为简单的 Dict 格式
             results = [
                 {
                     "title": doc.get("title"),
@@ -270,32 +270,32 @@ async def azureaisearch_search_async(search_queries: list[str], max_results: int
             ]
             return {"query": query, "results": results}
 
-        # parallelize the search queries
+        # 并行执行各搜索查询
         tasks = [do_search(q) for q in search_queries]
         return await asyncio.gather(*tasks)
 
 
 @traceable
 def perplexity_search(search_queries):
-    """Search the web using the Perplexity API.
+    """使用 Perplexity API 搜索网页。
     
     Args:
-        search_queries (List[SearchQuery]): List of search queries to process
+        search_queries (List[SearchQuery]): 要处理的搜索查询列表
   
     Returns:
-        List[dict]: List of search responses from Perplexity API, one per query. Each response has format:
+        List[dict]: 来自 Perplexity API 的搜索响应列表,每个查询一条。每个响应的格式如下:
             {
-                'query': str,                    # The original search query
+                'query': str,                    # 原始搜索查询
                 'follow_up_questions': None,      
                 'answer': None,
                 'images': list,
-                'results': [                     # List of search results
+                'results': [                     # 搜索结果列表
                     {
-                        'title': str,            # Title of the search result
-                        'url': str,              # URL of the result
-                        'content': str,          # Summary/snippet of content
-                        'score': float,          # Relevance score
-                        'raw_content': str|None  # Full content or None for secondary citations
+                        'title': str,            # 搜索结果的标题
+                        'url': str,              # 结果的 URL
+                        'content': str,          # 内容摘要/片段
+                        'score': float,          # 相关性得分
+                        'raw_content': str|None  # 完整内容;次级引用时为 None
                     },
                     ...
                 ]
@@ -316,7 +316,7 @@ def perplexity_search(search_queries):
             "messages": [
                 {
                     "role": "system",
-                    "content": "Search the web and provide factual information with sources."
+                    "content": "搜索网页并提供带来源的事实性信息。"
                 },
                 {
                     "role": "user",
@@ -330,36 +330,36 @@ def perplexity_search(search_queries):
             headers=headers,
             json=payload
         )
-        response.raise_for_status()  # Raise exception for bad status codes
+        response.raise_for_status()  # 状态码异常时抛出异常
         
-        # Parse the response
+        # 解析响应
         data = response.json()
         content = data["choices"][0]["message"]["content"]
         citations = data.get("citations", ["https://perplexity.ai"])
         
-        # Create results list for this query
+        # 为该查询创建结果列表
         results = []
         
-        # First citation gets the full content
+        # 第一条引用获得完整内容
         results.append({
-            "title": f"Perplexity Search, Source 1",
+            "title": f"Perplexity 搜索,来源 1",
             "url": citations[0],
             "content": content,
             "raw_content": content,
-            "score": 1.0  # Adding score to match Tavily format
+            "score": 1.0  # 添加 score 以匹配 Tavily 格式
         })
         
-        # Add additional citations without duplicating content
+        # 添加其余引用,且不重复内容
         for i, citation in enumerate(citations[1:], start=2):
             results.append({
-                "title": f"Perplexity Search, Source {i}",
+                "title": f"Perplexity 搜索,来源 {i}",
                 "url": citation,
-                "content": "See primary source for full content",
+                "content": "完整内容请参见主要来源",
                 "raw_content": None,
-                "score": 0.5  # Lower score for secondary sources
+                "score": 0.5  # 次级来源使用较低分数
             })
         
-        # Format response to match Tavily structure
+        # 将响应格式化为与 Tavily 一致的结构
         search_docs.append({
             "query": query,
             "follow_up_questions": None,
@@ -375,61 +375,61 @@ async def exa_search(search_queries, max_characters: Optional[int] = None, num_r
                      include_domains: Optional[List[str]] = None, 
                      exclude_domains: Optional[List[str]] = None,
                      subpages: Optional[int] = None):
-    """Search the web using the Exa API.
+    """使用 Exa API 搜索网页。
     
     Args:
-        search_queries (List[SearchQuery]): List of search queries to process
-        max_characters (int, optional): Maximum number of characters to retrieve for each result's raw content.
-                                       If None, the text parameter will be set to True instead of an object.
-        num_results (int): Number of search results per query. Defaults to 5.
-        include_domains (List[str], optional): List of domains to include in search results. 
-            When specified, only results from these domains will be returned.
-        exclude_domains (List[str], optional): List of domains to exclude from search results.
-            Cannot be used together with include_domains.
-        subpages (int, optional): Number of subpages to retrieve per result. If None, subpages are not retrieved.
+        search_queries (List[SearchQuery]): 要处理的搜索查询列表
+        max_characters (int, optional): 每个结果的 raw_content 可获取的最大字符数。
+                                       如果为 None,text 参数将被设为 True 而非对象。
+        num_results (int): 每个查询的搜索结果数量。默认为 5。
+        include_domains (List[str], optional): 搜索结果中要包含的域名列表。 
+            指定后,仅返回来自这些域名的结果。
+        exclude_domains (List[str], optional): 搜索结果中要排除的域名列表。
+            不能与 include_domains 同时使用。
+        subpages (int, optional): 每个结果要获取的子页面数量。如果为 None,则不获取子页面。
         
     Returns:
-        List[dict]: List of search responses from Exa API, one per query. Each response has format:
+        List[dict]: 来自 Exa API 的搜索响应列表,每个查询一条。每个响应的格式如下:
             {
-                'query': str,                    # The original search query
+                'query': str,                    # 原始搜索查询
                 'follow_up_questions': None,      
                 'answer': None,
                 'images': list,
-                'results': [                     # List of search results
+                'results': [                     # 搜索结果列表
                     {
-                        'title': str,            # Title of the search result
-                        'url': str,              # URL of the result
-                        'content': str,          # Summary/snippet of content
-                        'score': float,          # Relevance score
-                        'raw_content': str|None  # Full content or None for secondary citations
+                        'title': str,            # 搜索结果的标题
+                        'url': str,              # 结果的 URL
+                        'content': str,          # 内容摘要/片段
+                        'score': float,          # 相关性得分
+                        'raw_content': str|None  # 完整内容;次级引用时为 None
                     },
                     ...
                 ]
             }
     """
-    # Check that include_domains and exclude_domains are not both specified
+    # 检查 include_domains 与 exclude_domains 是否未被同时指定
     if include_domains and exclude_domains:
-        raise ValueError("Cannot specify both include_domains and exclude_domains")
+        raise ValueError("不能同时指定 include_domains 和 exclude_domains")
     
-    # Initialize Exa client (API key should be configured in your .env file)
+    # 初始化 Exa 客户端(API key 应配置在 .env 文件中)
     exa = Exa(api_key = f"{os.getenv('EXA_API_KEY')}")
     
-    # Define the function to process a single query
+    # 定义处理单个查询的函数
     async def process_query(query):
-        # Use run_in_executor to make the synchronous exa call in a non-blocking way
+        # 使用 run_in_executor 以非阻塞方式执行同步的 exa 调用
         loop = asyncio.get_event_loop()
         
-        # Define the function for the executor with all parameters
+        # 为执行器定义包含所有参数的函数
         def exa_search_fn():
-            # Build parameters dictionary
+            # 构建参数字典
             kwargs = {
-                # Set text to True if max_characters is None, otherwise use an object with max_characters
+                # 若 max_characters 为 None 则将 text 设为 True,否则使用包含 max_characters 的对象
                 "text": True if max_characters is None else {"max_characters": max_characters},
-                "summary": True,  # This is an amazing feature by EXA. It provides an AI generated summary of the content based on the query
+                "summary": True,  # 这是 Exa 的一项出色功能,会基于查询为内容生成 AI 摘要
                 "num_results": num_results
             }
             
-            # Add optional parameters only if they are provided
+            # 仅在提供可选参数时才添加
             if subpages is not None:
                 kwargs["subpages"] = subpages
                 
@@ -442,26 +442,26 @@ async def exa_search(search_queries, max_characters: Optional[int] = None, num_r
         
         response = await loop.run_in_executor(None, exa_search_fn)
         
-        # Format the response to match the expected output structure
+        # 将响应格式化为预期的输出结构
         formatted_results = []
-        seen_urls = set()  # Track URLs to avoid duplicates
+        seen_urls = set()  # 跟踪 URL 以避免重复
         
-        # Helper function to safely get value regardless of if item is dict or object
+        # 辅助函数:无论项是 dict 还是对象,都能安全取值
         def get_value(item, key, default=None):
             if isinstance(item, dict):
                 return item.get(key, default)
             else:
                 return getattr(item, key, default) if hasattr(item, key) else default
         
-        # Access the results from the SearchResponse object
+        # 从 SearchResponse 对象中获取结果
         results_list = get_value(response, 'results', [])
         
-        # First process all main results
+        # 先处理所有主结果
         for result in results_list:
-            # Get the score with a default of 0.0 if it's None or not present
+            # 获取 score,若为 None 或不存在则默认为 0.0
             score = get_value(result, 'score', 0.0)
             
-            # Combine summary and text for content if both are available
+            # 若摘要与文本均可用,则合并为 content
             text_content = get_value(result, 'text', '')
             summary_content = get_value(result, 'summary', '')
             
@@ -475,13 +475,13 @@ async def exa_search(search_queries, max_characters: Optional[int] = None, num_r
             title = get_value(result, 'title', '')
             url = get_value(result, 'url', '')
             
-            # Skip if we've seen this URL before (removes duplicate entries)
+            # 若该 URL 已出现过则跳过(去除重复条目)
             if url in seen_urls:
                 continue
                 
             seen_urls.add(url)
             
-            # Main result entry
+            # 主结果条目
             result_entry = {
                 "title": title,
                 "url": url,
@@ -490,18 +490,18 @@ async def exa_search(search_queries, max_characters: Optional[int] = None, num_r
                 "raw_content": text_content
             }
             
-            # Add the main result to the formatted results
+            # 将主结果添加到格式化结果中
             formatted_results.append(result_entry)
         
-        # Now process subpages only if the subpages parameter was provided
+        # 仅在提供了 subpages 参数时才处理子页面
         if subpages is not None:
             for result in results_list:
                 subpages_list = get_value(result, 'subpages', [])
                 for subpage in subpages_list:
-                    # Get subpage score
+                    # 获取子页面分数
                     subpage_score = get_value(subpage, 'score', 0.0)
                     
-                    # Combine summary and text for subpage content
+                    # 合并摘要与文本作为子页面内容
                     subpage_text = get_value(subpage, 'text', '')
                     subpage_summary = get_value(subpage, 'summary', '')
                     
@@ -514,7 +514,7 @@ async def exa_search(search_queries, max_characters: Optional[int] = None, num_r
                     
                     subpage_url = get_value(subpage, 'url', '')
                     
-                    # Skip if we've seen this URL before
+                    # 若该 URL 已出现过则跳过
                     if subpage_url in seen_urls:
                         continue
                         
@@ -528,11 +528,11 @@ async def exa_search(search_queries, max_characters: Optional[int] = None, num_r
                         "raw_content": subpage_text
                     })
         
-        # Collect images if available (only from main results to avoid duplication)
+        # 收集可用的图片(仅取自主结果以避免重复)
         images = []
         for result in results_list:
             image = get_value(result, 'image')
-            if image and image not in images:  # Avoid duplicate images
+            if image and image not in images:  # 避免重复图片
                 images.append(image)
                 
         return {
@@ -543,20 +543,20 @@ async def exa_search(search_queries, max_characters: Optional[int] = None, num_r
             "results": formatted_results
         }
     
-    # Process all queries sequentially with delay to respect rate limit
+    # 顺序处理所有查询并加延迟,以遵守速率限制
     search_docs = []
     for i, query in enumerate(search_queries):
         try:
-            # Add delay between requests (0.25s = 4 requests per second, well within the 5/s limit)
-            if i > 0:  # Don't delay the first request
+            # 请求间添加延迟(0.25 秒 = 每秒 4 次请求,远低于每秒 5 次的限制)
+            if i > 0:  # 第一次请求不加延迟
                 await asyncio.sleep(0.25)
             
             result = await process_query(query)
             search_docs.append(result)
         except Exception as e:
-            # Handle exceptions gracefully
-            print(f"Error processing query '{query}': {str(e)}")
-            # Add a placeholder result for failed queries to maintain index alignment
+            # 妥善处理异常
+            print(f"处理查询 '{query}' 时出错: {str(e)}")
+            # 为失败的查询添加占位结果,以保持索引对齐
             search_docs.append({
                 "query": query,
                 "follow_up_questions": None,
@@ -566,38 +566,38 @@ async def exa_search(search_queries, max_characters: Optional[int] = None, num_r
                 "error": str(e)
             })
             
-            # Add additional delay if we hit a rate limit error
+            # 若遇到速率限制错误,则增加额外延迟
             if "429" in str(e):
-                print("Rate limit exceeded. Adding additional delay...")
-                await asyncio.sleep(1.0)  # Add a longer delay if we hit a rate limit
+                print("已超出速率限制,正在增加额外延迟...")
+                await asyncio.sleep(1.0)  # 遇到速率限制时改用更长延迟
     
     return search_docs
 
 @traceable
 async def arxiv_search_async(search_queries, load_max_docs=5, get_full_documents=True, load_all_available_meta=True):
     """
-    Performs concurrent searches on arXiv using the ArxivRetriever.
+    使用 ArxivRetriever 在 arXiv 上并发执行搜索。
 
     Args:
-        search_queries (List[str]): List of search queries or article IDs
-        load_max_docs (int, optional): Maximum number of documents to return per query. Default is 5.
-        get_full_documents (bool, optional): Whether to fetch full text of documents. Default is True.
-        load_all_available_meta (bool, optional): Whether to load all available metadata. Default is True.
+        search_queries (List[str]): 搜索查询或文章 ID 列表
+        load_max_docs (int, optional): 每个查询返回文档的最大数量。默认为 5。
+        get_full_documents (bool, optional): 是否获取文档全文。默认为 True。
+        load_all_available_meta (bool, optional): 是否加载所有可用元数据。默认为 True。
 
     Returns:
-        List[dict]: List of search responses from arXiv, one per query. Each response has format:
+        List[dict]: 来自 arXiv 的搜索响应列表,每个查询一条。每个响应的格式如下:
             {
-                'query': str,                    # The original search query
+                'query': str,                    # 原始搜索查询
                 'follow_up_questions': None,      
                 'answer': None,
                 'images': [],
-                'results': [                     # List of search results
+                'results': [                     # 搜索结果列表
                     {
-                        'title': str,            # Title of the paper
-                        'url': str,              # URL (Entry ID) of the paper
-                        'content': str,          # Formatted summary with metadata
-                        'score': float,          # Relevance score (approximated)
-                        'raw_content': str|None  # Full paper content if available
+                        'title': str,            # 论文标题
+                        'url': str,              # 论文的 URL(Entry ID)
+                        'content': str,          # 带元数据的格式化摘要
+                        'score': float,          # 相关性得分(近似值)
+                        'raw_content': str|None  # 论文完整内容(如有)
                     },
                     ...
                 ]
@@ -606,62 +606,62 @@ async def arxiv_search_async(search_queries, load_max_docs=5, get_full_documents
     
     async def process_single_query(query):
         try:
-            # Create retriever for each query
+            # 为每个查询创建检索器
             retriever = ArxivRetriever(
                 load_max_docs=load_max_docs,
                 get_full_documents=get_full_documents,
                 load_all_available_meta=load_all_available_meta
             )
             
-            # Run the synchronous retriever in a thread pool
+            # 在线程池中运行同步检索器
             loop = asyncio.get_event_loop()
             docs = await loop.run_in_executor(None, lambda: retriever.invoke(query))
             
             results = []
-            # Assign decreasing scores based on the order
+            # 按顺序分配递减的分数
             base_score = 1.0
             score_decrement = 1.0 / (len(docs) + 1) if docs else 0
             
             for i, doc in enumerate(docs):
-                # Extract metadata
+                # 提取元数据
                 metadata = doc.metadata
                 
-                # Use entry_id as the URL (this is the actual arxiv link)
+                # 使用 entry_id 作为 URL(即实际的 arxiv 链接)
                 url = metadata.get('entry_id', '')
                 
-                # Format content with all useful metadata
+                # 用所有有用的元数据格式化内容
                 content_parts = []
 
-                # Primary information
+                # 基本信息
                 if 'Summary' in metadata:
-                    content_parts.append(f"Summary: {metadata['Summary']}")
+                    content_parts.append(f"摘要: {metadata['Summary']}")
 
                 if 'Authors' in metadata:
-                    content_parts.append(f"Authors: {metadata['Authors']}")
+                    content_parts.append(f"作者: {metadata['Authors']}")
 
-                # Add publication information
+                # 添加发表信息
                 published = metadata.get('Published')
                 published_str = published.isoformat() if hasattr(published, 'isoformat') else str(published) if published else ''
                 if published_str:
-                    content_parts.append(f"Published: {published_str}")
+                    content_parts.append(f"发表时间: {published_str}")
 
-                # Add additional metadata if available
+                # 如有可用则添加额外元数据
                 if 'primary_category' in metadata:
-                    content_parts.append(f"Primary Category: {metadata['primary_category']}")
+                    content_parts.append(f"主分类: {metadata['primary_category']}")
 
                 if 'categories' in metadata and metadata['categories']:
-                    content_parts.append(f"Categories: {', '.join(metadata['categories'])}")
+                    content_parts.append(f"分类: {', '.join(metadata['categories'])}")
 
                 if 'comment' in metadata and metadata['comment']:
-                    content_parts.append(f"Comment: {metadata['comment']}")
+                    content_parts.append(f"备注: {metadata['comment']}")
 
                 if 'journal_ref' in metadata and metadata['journal_ref']:
-                    content_parts.append(f"Journal Reference: {metadata['journal_ref']}")
+                    content_parts.append(f"期刊引用: {metadata['journal_ref']}")
 
                 if 'doi' in metadata and metadata['doi']:
                     content_parts.append(f"DOI: {metadata['doi']}")
 
-                # Get PDF link if available in the links
+                # 从 links 中获取 PDF 链接(如有)
                 pdf_link = ""
                 if 'links' in metadata and metadata['links']:
                     for link in metadata['links']:
@@ -670,12 +670,12 @@ async def arxiv_search_async(search_queries, load_max_docs=5, get_full_documents
                             content_parts.append(f"PDF: {pdf_link}")
                             break
 
-                # Join all content parts with newlines 
+                # 用换行符拼接所有内容部分 
                 content = "\n".join(content_parts)
                 
                 result = {
                     'title': metadata.get('Title', ''),
-                    'url': url,  # Using entry_id as the URL
+                    'url': url,  # 使用 entry_id 作为 URL
                     'content': content,
                     'score': base_score - (i * score_decrement),
                     'raw_content': doc.page_content if get_full_documents else None
@@ -690,8 +690,8 @@ async def arxiv_search_async(search_queries, load_max_docs=5, get_full_documents
                 'results': results
             }
         except Exception as e:
-            # Handle exceptions gracefully
-            print(f"Error processing arXiv query '{query}': {str(e)}")
+            # 妥善处理异常
+            print(f"处理 arXiv 查询 '{query}' 时出错: {str(e)}")
             return {
                 'query': query,
                 'follow_up_questions': None,
@@ -701,19 +701,19 @@ async def arxiv_search_async(search_queries, load_max_docs=5, get_full_documents
                 'error': str(e)
             }
     
-    # Process queries sequentially with delay to respect arXiv rate limit (1 request per 3 seconds)
+    # 顺序处理查询并加延迟,以遵守 arXiv 的速率限制(每 3 秒 1 次请求)
     search_docs = []
     for i, query in enumerate(search_queries):
         try:
-            # Add delay between requests (3 seconds per ArXiv's rate limit)
-            if i > 0:  # Don't delay the first request
+            # 请求间添加延迟(按 ArXiv 的速率限制为 3 秒)
+            if i > 0:  # 第一次请求不加延迟
                 await asyncio.sleep(3.0)
             
             result = await process_single_query(query)
             search_docs.append(result)
         except Exception as e:
-            # Handle exceptions gracefully
-            print(f"Error processing arXiv query '{query}': {str(e)}")
+            # 妥善处理异常
+            print(f"处理 arXiv 查询 '{query}' 时出错: {str(e)}")
             search_docs.append({
                 'query': query,
                 'follow_up_questions': None,
@@ -723,39 +723,39 @@ async def arxiv_search_async(search_queries, load_max_docs=5, get_full_documents
                 'error': str(e)
             })
             
-            # Add additional delay if we hit a rate limit error
+            # 若遇到速率限制错误,则增加额外延迟
             if "429" in str(e) or "Too Many Requests" in str(e):
-                print("ArXiv rate limit exceeded. Adding additional delay...")
-                await asyncio.sleep(5.0)  # Add a longer delay if we hit a rate limit
+                print("已超出 ArXiv 速率限制,正在增加额外延迟...")
+                await asyncio.sleep(5.0)  # 遇到速率限制时改用更长延迟
     
     return search_docs
 
 @traceable
 async def pubmed_search_async(search_queries, top_k_results=5, email=None, api_key=None, doc_content_chars_max=4000):
     """
-    Performs concurrent searches on PubMed using the PubMedAPIWrapper.
+    使用 PubMedAPIWrapper 在 PubMed 上并发执行搜索。
 
     Args:
-        search_queries (List[str]): List of search queries
-        top_k_results (int, optional): Maximum number of documents to return per query. Default is 5.
-        email (str, optional): Email address for PubMed API. Required by NCBI.
-        api_key (str, optional): API key for PubMed API for higher rate limits.
-        doc_content_chars_max (int, optional): Maximum characters for document content. Default is 4000.
+        search_queries (List[str]): 搜索查询列表
+        top_k_results (int, optional): 每个查询返回文档的最大数量。默认为 5。
+        email (str, optional): PubMed API 使用的邮箱地址。NCBI 要求提供。
+        api_key (str, optional): PubMed API 的密钥,用于获得更高的速率限制。
+        doc_content_chars_max (int, optional): 文档内容的最大字符数。默认为 4000。
 
     Returns:
-        List[dict]: List of search responses from PubMed, one per query. Each response has format:
+        List[dict]: 来自 PubMed 的搜索响应列表,每个查询一条。每个响应的格式如下:
             {
-                'query': str,                    # The original search query
+                'query': str,                    # 原始搜索查询
                 'follow_up_questions': None,      
                 'answer': None,
                 'images': [],
-                'results': [                     # List of search results
+                'results': [                     # 搜索结果列表
                     {
-                        'title': str,            # Title of the paper
-                        'url': str,              # URL to the paper on PubMed
-                        'content': str,          # Formatted summary with metadata
-                        'score': float,          # Relevance score (approximated)
-                        'raw_content': str       # Full abstract content
+                        'title': str,            # 论文标题
+                        'url': str,              # 论文在 PubMed 上的 URL
+                        'content': str,          # 带元数据的格式化摘要
+                        'score': float,          # 相关性得分(近似值)
+                        'raw_content': str       # 完整摘要内容
                     },
                     ...
                 ]
@@ -764,9 +764,9 @@ async def pubmed_search_async(search_queries, top_k_results=5, email=None, api_k
     
     async def process_single_query(query):
         try:
-            # print(f"Processing PubMed query: '{query}'")
+            # print(f"处理 PubMed 查询: '{query}'")
             
-            # Create PubMed wrapper for the query
+            # 为该查询创建 PubMed 包装器
             wrapper = PubMedAPIWrapper(
                 top_k_results=top_k_results,
                 doc_content_chars_max=doc_content_chars_max,
@@ -774,37 +774,37 @@ async def pubmed_search_async(search_queries, top_k_results=5, email=None, api_k
                 api_key=api_key if api_key else ""
             )
             
-            # Run the synchronous wrapper in a thread pool
+            # 在线程池中运行同步包装器
             loop = asyncio.get_event_loop()
             
-            # Use wrapper.lazy_load instead of load to get better visibility
+            # 使用 wrapper.lazy_load 而非 load,以获得更好的可见性
             docs = await loop.run_in_executor(None, lambda: list(wrapper.lazy_load(query)))
             
-            print(f"Query '{query}' returned {len(docs)} results")
+            print(f"查询 '{query}' 返回了 {len(docs)} 条结果")
             
             results = []
-            # Assign decreasing scores based on the order
+            # 按顺序分配递减的分数
             base_score = 1.0
             score_decrement = 1.0 / (len(docs) + 1) if docs else 0
             
             for i, doc in enumerate(docs):
-                # Format content with metadata
+                # 用元数据格式化内容
                 content_parts = []
                 
                 if doc.get('Published'):
-                    content_parts.append(f"Published: {doc['Published']}")
+                    content_parts.append(f"发表时间: {doc['Published']}")
                 
                 if doc.get('Copyright Information'):
-                    content_parts.append(f"Copyright Information: {doc['Copyright Information']}")
+                    content_parts.append(f"版权信息: {doc['Copyright Information']}")
                 
                 if doc.get('Summary'):
-                    content_parts.append(f"Summary: {doc['Summary']}")
+                    content_parts.append(f"摘要: {doc['Summary']}")
                 
-                # Generate PubMed URL from the article UID
+                # 根据文章 UID 生成 PubMed URL
                 uid = doc.get('uid', '')
                 url = f"https://pubmed.ncbi.nlm.nih.gov/{uid}/" if uid else ""
                 
-                # Join all content parts with newlines
+                # 用换行符拼接所有内容部分
                 content = "\n".join(content_parts)
                 
                 result = {
@@ -824,11 +824,11 @@ async def pubmed_search_async(search_queries, top_k_results=5, email=None, api_k
                 'results': results
             }
         except Exception as e:
-            # Handle exceptions with more detailed information
-            error_msg = f"Error processing PubMed query '{query}': {str(e)}"
+            # 处理异常并提供更详细的信息
+            error_msg = f"处理 PubMed 查询 '{query}' 时出错: {str(e)}"
             print(error_msg)
             import traceback
-            print(traceback.format_exc())  # Print full traceback for debugging
+            print(traceback.format_exc())  # 打印完整堆栈以便调试
             
             return {
                 'query': query,
@@ -839,29 +839,29 @@ async def pubmed_search_async(search_queries, top_k_results=5, email=None, api_k
                 'error': str(e)
             }
     
-    # Process all queries with a reasonable delay between them
+    # 处理所有查询,并在其间加入合理延迟
     search_docs = []
     
-    # Start with a small delay that increases if we encounter rate limiting
-    delay = 1.0  # Start with a more conservative delay
+    # 从较小延迟开始,遇到限流则逐步增加
+    delay = 1.0  # 从较保守的延迟开始
     
     for i, query in enumerate(search_queries):
         try:
-            # Add delay between requests
-            if i > 0:  # Don't delay the first request
-                # print(f"Waiting {delay} seconds before next query...")
+            # 请求间添加延迟
+            if i > 0:  # 第一次请求不加延迟
+                # print(f"等待 {delay} 秒后进行下一个查询...")
                 await asyncio.sleep(delay)
             
             result = await process_single_query(query)
             search_docs.append(result)
             
-            # If query was successful with results, we can slightly reduce delay (but not below minimum)
+            # 如果查询成功且返回了结果,可略微缩短延迟(但不低于下限)
             if result.get('results') and len(result['results']) > 0:
-                delay = max(0.5, delay * 0.9)  # Don't go below 0.5 seconds
+                delay = max(0.5, delay * 0.9)  # 不低于 0.5 秒
             
         except Exception as e:
-            # Handle exceptions gracefully
-            error_msg = f"Error in main loop processing PubMed query '{query}': {str(e)}"
+            # 妥善处理异常
+            error_msg = f"主循环处理 PubMed 查询 '{query}' 时出错: {str(e)}"
             print(error_msg)
             
             search_docs.append({
@@ -873,28 +873,28 @@ async def pubmed_search_async(search_queries, top_k_results=5, email=None, api_k
                 'error': str(e)
             })
             
-            # If we hit an exception, increase delay for next query
-            delay = min(5.0, delay * 1.5)  # Don't exceed 5 seconds
+            # 若发生异常,则增加下一次查询的延迟
+            delay = min(5.0, delay * 1.5)  # 不超过 5 秒
     
     return search_docs
 
 @traceable
 async def linkup_search(search_queries, depth: Optional[str] = "standard"):
     """
-    Performs concurrent web searches using the Linkup API.
+    使用 Linkup API 并发执行网页搜索。
 
     Args:
-        search_queries (List[SearchQuery]): List of search queries to process
-        depth (str, optional): "standard" (default)  or "deep". More details here https://docs.linkup.so/pages/documentation/get-started/concepts
+        search_queries (List[SearchQuery]): 要处理的搜索查询列表
+        depth (str, optional): "standard"(默认)或 "deep"。更多细节见 https://docs.linkup.so/pages/documentation/get-started/concepts
 
     Returns:
-        List[dict]: List of search responses from Linkup API, one per query. Each response has format:
+        List[dict]: 来自 Linkup API 的搜索响应列表,每个查询一条。每个响应的格式如下:
             {
-                'results': [            # List of search results
+                'results': [            # 搜索结果列表
                     {
-                        'title': str,   # Title of the search result
-                        'url': str,     # URL of the result
-                        'content': str, # Summary/snippet of content
+                        'title': str,   # 搜索结果的标题
+                        'url': str,     # 结果的 URL
+                        'content': str, # 内容摘要/片段
                     },
                     ...
                 ]
@@ -927,41 +927,41 @@ async def linkup_search(search_queries, depth: Optional[str] = "standard"):
 @traceable
 async def google_search_async(search_queries: Union[str, List[str]], max_results: int = 5, include_raw_content: bool = True):
     """
-    Performs concurrent web searches using Google.
-    Uses Google Custom Search API if environment variables are set, otherwise falls back to web scraping.
+    使用 Google 并发执行网页搜索。
+    若设置了相应环境变量则使用 Google Custom Search API,否则回退到网页爬取。
 
     Args:
-        search_queries (List[str]): List of search queries to process
-        max_results (int): Maximum number of results to return per query
-        include_raw_content (bool): Whether to fetch full page content
+        search_queries (List[str]): 要处理的搜索查询列表
+        max_results (int): 每个查询返回结果的最大数量
+        include_raw_content (bool): 是否获取完整页面内容
 
     Returns:
-        List[dict]: List of search responses from Google, one per query
+        List[dict]: 来自 Google 的搜索响应列表,每个查询一条
     """
 
 
-    # Check for API credentials from environment variables
+    # 从环境变量检查 API 凭据
     api_key = os.environ.get("GOOGLE_API_KEY")
     cx = os.environ.get("GOOGLE_CX")
     use_api = bool(api_key and cx)
     
-    # Handle case where search_queries is a single string
+    # 处理 search_queries 为单个字符串的情况
     if isinstance(search_queries, str):
         search_queries = [search_queries]
     
-    # Define user agent generator
+    # 定义 user agent 生成器
     def get_useragent():
-        """Generates a random user agent string."""
+        """生成随机的 user agent 字符串。"""
         lynx_version = f"Lynx/{random.randint(2, 3)}.{random.randint(8, 9)}.{random.randint(0, 2)}"
         libwww_version = f"libwww-FM/{random.randint(2, 3)}.{random.randint(13, 15)}"
         ssl_mm_version = f"SSL-MM/{random.randint(1, 2)}.{random.randint(3, 5)}"
         openssl_version = f"OpenSSL/{random.randint(1, 3)}.{random.randint(0, 4)}.{random.randint(0, 9)}"
         return f"{lynx_version} {libwww_version} {ssl_mm_version} {openssl_version}"
     
-    # Create executor for running synchronous operations
+    # 创建用于运行同步操作的执行器
     executor = None if use_api else concurrent.futures.ThreadPoolExecutor(max_workers=5)
     
-    # Use a semaphore to limit concurrent requests
+    # 使用信号量限制并发请求数
     semaphore = asyncio.Semaphore(5 if use_api else 2)
     
     async def search_single_query(query):
@@ -969,14 +969,14 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
             try:
                 results = []
                 
-                # API-based search
+                # 基于 API 的搜索
                 if use_api:
-                    # The API returns up to 10 results per request
+                    # 该 API 每次请求最多返回 10 条结果
                     for start_index in range(1, max_results + 1, 10):
-                        # Calculate how many results to request in this batch
+                        # 计算本批次请求的结果数量
                         num = min(10, max_results - (start_index - 1))
                         
-                        # Make request to Google Custom Search API
+                        # 向 Google Custom Search API 发起请求
                         params = {
                             'q': query,
                             'key': api_key,
@@ -984,18 +984,18 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
                             'start': start_index,
                             'num': num
                         }
-                        print(f"Requesting {num} results for '{query}' from Google API...")
+                        print(f"正在向 Google API 请求 '{query}' 的 {num} 条结果...")
 
                         async with aiohttp.ClientSession() as session:
                             async with session.get('https://www.googleapis.com/customsearch/v1', params=params) as response:
                                 if response.status != 200:
                                     error_text = await response.text()
-                                    print(f"API error: {response.status}, {error_text}")
+                                    print(f"API 错误: {response.status},{error_text}")
                                     break
                                     
                                 data = await response.json()
                                 
-                                # Process search results
+                                # 处理搜索结果
                                 for item in data.get('items', []):
                                     result = {
                                         "title": item.get('title', ''),
@@ -1006,20 +1006,20 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
                                     }
                                     results.append(result)
                         
-                        # Respect API quota with a small delay
+                        # 加短暂延迟以遵守 API 配额
                         await asyncio.sleep(0.2)
                         
-                        # If we didn't get a full page of results, no need to request more
+                        # 如果未取满一页结果,则无需继续请求
                         if not data.get('items') or len(data.get('items', [])) < num:
                             break
                 
-                # Web scraping based search
+                # 基于网页爬取的搜索
                 else:
-                    # Add delay between requests
+                    # 请求间添加延迟
                     await asyncio.sleep(0.5 + random.random() * 1.5)
-                    print(f"Scraping Google for '{query}'...")
+                    print(f"正在爬取 Google 搜索 '{query}'...")
 
-                    # Define scraping function
+                    # 定义爬取函数
                     def google_search(query, max_results):
                         try:
                             lang = "en"
@@ -1030,7 +1030,7 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
                             search_results = []
                             
                             while fetched_results < max_results:
-                                # Send request to Google
+                                # 向 Google 发送请求
                                 resp = requests.get(
                                     url="https://www.google.com/search",
                                     headers={
@@ -1045,13 +1045,13 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
                                         "safe": safe,
                                     },
                                     cookies = {
-                                        'CONSENT': 'PENDING+987',  # Bypasses the consent page
+                                        'CONSENT': 'PENDING+987',  # 用于绕过同意页面
                                         'SOCS': 'CAESHAgBEhIaAB',
                                     }
                                 )
                                 resp.raise_for_status()
                                 
-                                # Parse results
+                                # 解析结果
                                 soup = BeautifulSoup(resp.text, "html.parser")
                                 result_block = soup.find_all("div", class_="ezO2md")
                                 new_results = 0
@@ -1071,7 +1071,7 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
                                         title = title_tag.text
                                         description = description_tag.text
                                         
-                                        # Store result in the same format as the API results
+                                        # 以与 API 结果相同的格式保存结果
                                         search_results.append({
                                             "title": title,
                                             "url": link,
@@ -1090,25 +1090,25 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
                                     break
                                     
                                 start += 10
-                                time.sleep(1)  # Delay between pages
+                                time.sleep(1)  # 页面间延迟
                             
                             return search_results
                                 
                         except Exception as e:
-                            print(f"Error in Google search for '{query}': {str(e)}")
+                            print(f"Google 搜索 '{query}' 时出错: {str(e)}")
                             return []
                     
-                    # Execute search in thread pool
+                    # 在线程池中执行搜索
                     loop = asyncio.get_running_loop()
                     search_results = await loop.run_in_executor(
                         executor, 
                         lambda: google_search(query, max_results)
                     )
                     
-                    # Process the results
+                    # 处理结果
                     results = search_results
                 
-                # If requested, fetch full page content asynchronously (for both API and web scraping)
+                # 如有要求,异步获取完整页面内容(API 与网页爬取均适用)
                 if include_raw_content and results:
                     content_semaphore = asyncio.Semaphore(3)
                     
@@ -1127,25 +1127,25 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
                                     await asyncio.sleep(0.2 + random.random() * 0.6)
                                     async with session.get(url, headers=headers, timeout=10) as response:
                                         if response.status == 200:
-                                            # Check content type to handle binary files
+                                            # 检查内容类型以处理二进制文件
                                             content_type = response.headers.get('Content-Type', '').lower()
                                             
-                                            # Handle PDFs and other binary files
+                                            # 处理 PDF 及其他二进制文件
                                             if 'application/pdf' in content_type or 'application/octet-stream' in content_type:
-                                                # For PDFs, indicate that content is binary and not parsed
-                                                result['raw_content'] = f"[Binary content: {content_type}. Content extraction not supported for this file type.]"
+                                                # 对 PDF,标明内容为二进制且未解析
+                                                result['raw_content'] = f"[二进制内容: {content_type}。不支持对此类文件提取内容。]"
                                             else:
                                                 try:
-                                                    # Try to decode as UTF-8 with replacements for non-UTF8 characters
+                                                    # 尝试以 UTF-8 解码,并用替换符处理非 UTF-8 字符
                                                     html = await response.text(errors='replace')
                                                     soup = BeautifulSoup(html, 'html.parser')
                                                     result['raw_content'] = soup.get_text()
                                                 except UnicodeDecodeError as ude:
-                                                    # Fallback if we still have decoding issues
-                                                    result['raw_content'] = f"[Could not decode content: {str(ude)}]"
+                                                    # 若仍有解码问题则回退
+                                                    result['raw_content'] = f"[无法解码内容: {str(ude)}]"
                                 except Exception as e:
-                                    print(f"Warning: Failed to fetch content for {url}: {str(e)}")
-                                    result['raw_content'] = f"[Error fetching content: {str(e)}]"
+                                    print(f"警告: 获取 {url} 内容失败: {str(e)}")
+                                    result['raw_content'] = f"[获取内容时出错: {str(e)}]"
                                 return result
                         
                         for result in results:
@@ -1153,7 +1153,7 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
                         
                         updated_results = await asyncio.gather(*fetch_tasks)
                         results = updated_results
-                        print(f"Fetched full content for {len(results)} results")
+                        print(f"已获取 {len(results)} 条结果的完整内容")
                 
                 return {
                     "query": query,
@@ -1163,7 +1163,7 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
                     "results": results
                 }
             except Exception as e:
-                print(f"Error in Google search for query '{query}': {str(e)}")
+                print(f"Google 搜索查询 '{query}' 时出错: {str(e)}")
                 return {
                     "query": query,
                     "follow_up_questions": None,
@@ -1173,90 +1173,90 @@ async def google_search_async(search_queries: Union[str, List[str]], max_results
                 }
     
     try:
-        # Create tasks for all search queries
+        # 为所有搜索查询创建任务
         search_tasks = [search_single_query(query) for query in search_queries]
         
-        # Execute all searches concurrently
+        # 并发执行所有搜索
         search_results = await asyncio.gather(*search_tasks)
         
         return search_results
     finally:
-        # Only shut down executor if it was created
+        # 仅在执行器已创建时才将其关闭
         if executor:
             executor.shutdown(wait=False)
 
 async def scrape_pages(titles: List[str], urls: List[str]) -> str:
     """
-    Scrapes content from a list of URLs and formats it into a readable markdown document.
+    爬取一组 URL 的内容,并格式化为可读的 markdown 文档。
     
-    This function:
-    1. Takes a list of page titles and URLs
-    2. Makes asynchronous HTTP requests to each URL
-    3. Converts HTML content to markdown
-    4. Formats all content with clear source attribution
+    此函数:
+    1. 接收页面标题和 URL 列表
+    2. 对每个 URL 发起异步 HTTP 请求
+    3. 将 HTML 内容转换为 markdown
+    4. 格式化所有内容并附上清晰的来源标注
     
     Args:
-        titles (List[str]): A list of page titles corresponding to each URL
-        urls (List[str]): A list of URLs to scrape content from
+        titles (List[str]): 与每个 URL 对应的页面标题列表
+        urls (List[str]): 要爬取内容的 URL 列表
         
     Returns:
-        str: A formatted string containing the full content of each page in markdown format,
-             with clear section dividers and source attribution
+        str: 格式化字符串,以 markdown 格式包含每个页面的完整内容,
+             带有清晰的章节分隔符和来源标注
     """
     
-    # Create an async HTTP client
+    # 创建异步 HTTP 客户端
     async with httpx.AsyncClient(follow_redirects=True, timeout=30.0) as client:
         pages = []
         
-        # Fetch each URL and convert to markdown
+        # 获取每个 URL 并转换为 markdown
         for url in urls:
             try:
-                # Fetch the content
+                # 获取内容
                 response = await client.get(url)
                 response.raise_for_status()
                 
-                # Convert HTML to markdown if successful
+                # 若成功则将 HTML 转换为 markdown
                 if response.status_code == 200:
-                    # Handle different content types
+                    # 处理不同的内容类型
                     content_type = response.headers.get('Content-Type', '')
                     if 'text/html' in content_type:
-                        # Convert HTML to markdown
+                        # 将 HTML 转换为 markdown
                         markdown_content = markdownify(response.text)
                         pages.append(markdown_content)
                     else:
-                        # For non-HTML content, just mention the content type
-                        pages.append(f"Content type: {content_type} (not converted to markdown)")
+                        # 非 HTML 内容仅说明其内容类型
+                        pages.append(f"内容类型: {content_type}(未转换为 markdown)")
                 else:
-                    pages.append(f"Error: Received status code {response.status_code}")
+                    pages.append(f"错误: 收到状态码 {response.status_code}")
         
             except Exception as e:
-                # Handle any exceptions during fetch
-                pages.append(f"Error fetching URL: {str(e)}")
+                # 处理获取过程中的任何异常
+                pages.append(f"获取 URL 时出错: {str(e)}")
         
-        # Create formatted output
-        formatted_output = f"Search results: \n\n"
+        # 创建格式化输出
+        formatted_output = f"搜索结果: \n\n"
         
         for i, (title, url, page) in enumerate(zip(titles, urls, pages)):
-            formatted_output += f"\n\n--- SOURCE {i+1}: {title} ---\n"
+            formatted_output += f"\n\n--- 来源 {i+1}: {title} ---\n"
             formatted_output += f"URL: {url}\n\n"
-            formatted_output += f"FULL CONTENT:\n {page}"
+            formatted_output += f"完整内容:\n {page}"
             formatted_output += "\n\n" + "-" * 80 + "\n"
         
     return formatted_output
 
 @tool
 async def duckduckgo_search(search_queries: List[str]):
-    """Perform searches using DuckDuckGo with retry logic to handle rate limits
+    """使用 DuckDuckGo 执行搜索,带重试逻辑以应对速率限制
     
     Args:
-        search_queries (List[str]): List of search queries to process
+        search_queries (List[str]): 要处理的搜索查询列表
         
     Returns:
-        str: A formatted string of search results
+        str: 格式化的搜索结果字符串
     """
     
     async def process_single_query(query):
-        # Execute synchronous search in the event loop's thread pool
+        # 在事件循环的线程池中执行同步搜索
         loop = asyncio.get_event_loop()
         
         def perform_search():
@@ -1269,33 +1269,33 @@ async def duckduckgo_search(search_queries: List[str]):
                 try:
                     results = []
                     with DDGS() as ddgs:
-                        # Change query slightly and add delay between retries
+                        # 稍微更改查询,并在重试间添加延迟
                         if retry_count > 0:
-                            # Random delay with exponential backoff
+                            # 指数退避的随机延迟
                             delay = backoff_factor ** retry_count + random.random()
-                            print(f"Retry {retry_count}/{max_retries} for query '{query}' after {delay:.2f}s delay")
+                            print(f"查询 '{query}' 第 {retry_count}/{max_retries} 次重试,延迟 {delay:.2f} 秒后执行")
                             time.sleep(delay)
                             
-                            # Add a random element to the query to bypass caching/rate limits
+                            # 向查询添加随机元素以绕过缓存/速率限制
                             modifiers = ['about', 'info', 'guide', 'overview', 'details', 'explained']
                             modified_query = f"{query} {random.choice(modifiers)}"
                         else:
                             modified_query = query
                         
-                        # Execute search
+                        # 执行搜索
                         ddg_results = list(ddgs.text(modified_query, max_results=5))
                         
-                        # Format results
+                        # 格式化结果
                         for i, result in enumerate(ddg_results):
                             results.append({
                                 'title': result.get('title', ''),
                                 'url': result.get('href', ''),
                                 'content': result.get('body', ''),
-                                'score': 1.0 - (i * 0.1),  # Simple scoring mechanism
+                                'score': 1.0 - (i * 0.1),  # 简单的打分机制
                                 'raw_content': result.get('body', '')
                             })
                         
-                        # Return successful results
+                        # 返回成功的结果
                         return {
                             'query': query,
                             'follow_up_questions': None,
@@ -1304,19 +1304,19 @@ async def duckduckgo_search(search_queries: List[str]):
                             'results': results
                         }
                 except Exception as e:
-                    # Store the exception and retry
+                    # 保存异常并重试
                     last_exception = e
                     retry_count += 1
-                    print(f"DuckDuckGo search error: {str(e)}. Retrying {retry_count}/{max_retries}")
+                    print(f"DuckDuckGo 搜索错误: {str(e)}。正在重试 {retry_count}/{max_retries}")
                     
-                    # If not a rate limit error, don't retry
+                    # 若非速率限制错误,则不再重试
                     if "Ratelimit" not in str(e) and retry_count >= 1:
-                        print(f"Non-rate limit error, stopping retries: {str(e)}")
+                        print(f"非速率限制错误,停止重试: {str(e)}")
                         break
             
-            # If we reach here, all retries failed
-            print(f"All retries failed for query '{query}': {str(last_exception)}")
-            # Return empty results but with query info preserved
+            # 若执行到这里,说明所有重试均已失败
+            print(f"查询 '{query}' 的所有重试均已失败: {str(last_exception)}")
+            # 返回空结果,但保留查询信息
             return {
                 'query': query,
                 'follow_up_questions': None,
@@ -1328,36 +1328,36 @@ async def duckduckgo_search(search_queries: List[str]):
             
         return await loop.run_in_executor(None, perform_search)
 
-    # Process queries with delay between them to reduce rate limiting
+    # 处理各查询并在其间加延迟,以降低触发限流的概率
     search_docs = []
     urls = []
     titles = []
     for i, query in enumerate(search_queries):
-        # Add delay between queries (except first one)
+        # 查询间添加延迟(第一条除外)
         if i > 0:
-            delay = 2.0 + random.random() * 2.0  # Random delay 2-4 seconds
+            delay = 2.0 + random.random() * 2.0  # 2-4 秒的随机延迟
             await asyncio.sleep(delay)
         
-        # Process the query
+        # 处理该查询
         result = await process_single_query(query)
         search_docs.append(result)
         
-        # Safely extract URLs and titles from results, handling empty result cases
+        # 从结果中安全提取 URL 和标题,并处理结果为空的情况
         if result['results'] and len(result['results']) > 0:
             for res in result['results']:
                 if 'url' in res and 'title' in res:
                     urls.append(res['url'])
                     titles.append(res['title'])
     
-    # If we got any valid URLs, scrape the pages
+    # 如果得到了任何有效 URL,则爬取相应页面
     if urls:
         return await scrape_pages(titles, urls)
     else:
-        return "No valid search results found. Please try different search queries or use a different search API."
+        return "未找到有效的搜索结果。请尝试其他搜索查询或使用其他搜索 API。"
 
 TAVILY_SEARCH_DESCRIPTION = (
-    "A search engine optimized for comprehensive, accurate, and trusted results. "
-    "Useful for when you need to answer questions about current events."
+    "一款为全面、准确、可信的结果而优化的搜索引擎。"
+    "适合在需要回答时事相关问题时使用。"
 )
 
 @tool(description=TAVILY_SEARCH_DESCRIPTION)
@@ -1368,17 +1368,17 @@ async def tavily_search(
     config: RunnableConfig = None
 ) -> str:
     """
-    Fetches results from Tavily search API.
+    从 Tavily 搜索 API 获取结果。
 
     Args:
-        queries (List[str]): List of search queries
-        max_results (int): Maximum number of results to return
-        topic (Literal['general', 'news', 'finance']): Topic to filter results by
+        queries (List[str]): 搜索查询列表
+        max_results (int): 返回结果的最大数量
+        topic (Literal['general', 'news', 'finance']): 用于筛选结果的主题
 
     Returns:
-        str: A formatted string of search results
+        str: 格式化的搜索结果字符串
     """
-    # Use tavily_search_async with include_raw_content=True to get content directly
+    # 使用 tavily_search_async 并设置 include_raw_content=True 以直接获取内容
     search_results = await tavily_search_async(
         queries,
         max_results=max_results,
@@ -1386,10 +1386,10 @@ async def tavily_search(
         include_raw_content=True
     )
 
-    # Format the search results directly using the raw_content already provided
-    formatted_output = f"Search results: \n\n"
+    # 直接使用已提供的 raw_content 格式化搜索结果
+    formatted_output = f"搜索结果: \n\n"
     
-    # Deduplicate results by URL
+    # 按 URL 对结果去重
     unique_results = {}
     for response in search_results:
         for result in response['results']:
@@ -1402,7 +1402,7 @@ async def tavily_search(
 
     configurable = Configuration.from_runnable_config(config)
     max_char_to_include = 30_000
-    # TODO: share this behavior across all search implementations / tools
+    # TODO: 在所有搜索实现/工具间共享此行为
     if configurable.process_search_results == "summarize":
         if configurable.summarization_model_provider == "anthropic":
             extra_kwargs = {"betas": ["extended-cache-ttl-2025-04-11"]}
@@ -1438,33 +1438,33 @@ async def tavily_search(
             for doc in stitched_docs
         }
 
-    # Format the unique results
+    # 格式化去重后的结果
     for i, (url, result) in enumerate(unique_results.items()):
-        formatted_output += f"\n\n--- SOURCE {i+1}: {result['title']} ---\n"
+        formatted_output += f"\n\n--- 来源 {i+1}: {result['title']} ---\n"
         formatted_output += f"URL: {url}\n\n"
-        formatted_output += f"SUMMARY:\n{result['content']}\n\n"
+        formatted_output += f"摘要:\n{result['content']}\n\n"
         if result.get('raw_content'):
-            formatted_output += f"FULL CONTENT:\n{result['raw_content'][:max_char_to_include]}"  # Limit content size
+            formatted_output += f"完整内容:\n{result['raw_content'][:max_char_to_include]}"  # 限制内容大小
         formatted_output += "\n\n" + "-" * 80 + "\n"
     
     if unique_results:
         return formatted_output
     else:
-        return "No valid search results found. Please try different search queries or use a different search API."
+        return "未找到有效的搜索结果。请尝试其他搜索查询或使用其他搜索 API。"
 
 
 @tool
 async def azureaisearch_search(queries: List[str], max_results: int = 5, topic: str = "general") -> str:
     """
-    Fetches results from Azure AI Search API.
+    从 Azure AI 搜索 API 获取结果。
     
     Args:
-        queries (List[str]): List of search queries
+        queries (List[str]): 搜索查询列表
         
     Returns:
-        str: A formatted string of search results
+        str: 格式化的搜索结果字符串
     """
-    # Use azureaisearch_search_async with include_raw_content=True to get content directly
+    # 使用 azureaisearch_search_async 并设置 include_raw_content=True 以直接获取内容
     search_results = await azureaisearch_search_async(
         queries,
         max_results=max_results,
@@ -1472,10 +1472,10 @@ async def azureaisearch_search(queries: List[str], max_results: int = 5, topic: 
         include_raw_content=True
     )
 
-    # Format the search results directly using the raw_content already provided
-    formatted_output = f"Search results: \n\n"
+    # 直接使用已提供的 raw_content 格式化搜索结果
+    formatted_output = f"搜索结果: \n\n"
     
-    # Deduplicate results by URL
+    # 按 URL 对结果去重
     unique_results = {}
     for response in search_results:
         for result in response['results']:
@@ -1483,41 +1483,41 @@ async def azureaisearch_search(queries: List[str], max_results: int = 5, topic: 
             if url not in unique_results:
                 unique_results[url] = result
     
-    # Format the unique results
+    # 格式化去重后的结果
     for i, (url, result) in enumerate(unique_results.items()):
-        formatted_output += f"\n\n--- SOURCE {i+1}: {result['title']} ---\n"
+        formatted_output += f"\n\n--- 来源 {i+1}: {result['title']} ---\n"
         formatted_output += f"URL: {url}\n\n"
-        formatted_output += f"SUMMARY:\n{result['content']}\n\n"
+        formatted_output += f"摘要:\n{result['content']}\n\n"
         if result.get('raw_content'):
-            formatted_output += f"FULL CONTENT:\n{result['raw_content'][:30000]}"  # Limit content size
+            formatted_output += f"完整内容:\n{result['raw_content'][:30000]}"  # 限制内容大小
         formatted_output += "\n\n" + "-" * 80 + "\n"
     
     if unique_results:
         return formatted_output
     else:
-        return "No valid search results found. Please try different search queries or use a different search API."
+        return "未找到有效的搜索结果。请尝试其他搜索查询或使用其他搜索 API。"
 
 
 async def select_and_execute_search(search_api: str, query_list: list[str], params_to_pass: dict) -> str:
-    """Select and execute the appropriate search API.
+    """选择并执行相应的搜索 API。
     
     Args:
-        search_api: Name of the search API to use
-        query_list: List of search queries to execute
-        params_to_pass: Parameters to pass to the search API
+        search_api: 要使用的搜索 API 名称
+        query_list: 要执行的搜索查询列表
+        params_to_pass: 传给搜索 API 的参数
         
     Returns:
-        Formatted string containing search results
+        包含搜索结果的格式化字符串
         
     Raises:
-        ValueError: If an unsupported search API is specified
+        ValueError: 如果指定了不支持的搜索 API
     """
     if search_api == "tavily":
-        # Tavily search tool used with both workflow and agent 
-        # and returns a formatted source string
+        # Tavily 搜索工具,同时用于工作流和智能体
+        # 并返回格式化的来源字符串
         return await tavily_search.ainvoke({'queries': query_list, **params_to_pass})
     elif search_api == "duckduckgo":
-        # DuckDuckGo search tool used with both workflow and agent 
+        # DuckDuckGo 搜索工具,同时用于工作流和智能体
         return await duckduckgo_search.ainvoke({'search_queries': query_list})
     elif search_api == "perplexity":
         search_results = perplexity_search(query_list, **params_to_pass)
@@ -1534,7 +1534,7 @@ async def select_and_execute_search(search_api: str, query_list: list[str], para
     elif search_api == "azureaisearch":
         search_results = await azureaisearch_search_async(query_list, **params_to_pass)
     else:
-        raise ValueError(f"Unsupported search API: {search_api}")
+        raise ValueError(f"不支持的搜索 API: {search_api}")
 
     return deduplicate_and_format_sources(search_results, max_tokens_per_source=4000, deduplication_strategy="keep_first")
 
@@ -1545,9 +1545,9 @@ class Summary(BaseModel):
 
 
 async def summarize_webpage(model: BaseChatModel, webpage_content: str) -> str:
-    """Summarize webpage content."""
+    """总结网页内容。"""
     try:
-        user_input_content = "Please summarize the article"
+        user_input_content = "请总结这篇文章"
         if isinstance(model, ChatAnthropic):
             user_input_content = [{
                 "type": "text",
@@ -1560,7 +1560,7 @@ async def summarize_webpage(model: BaseChatModel, webpage_content: str) -> str:
             {"role": "user", "content": user_input_content},
         ])
     except:
-        # fall back on the raw content
+        # 回退到原始内容
         return webpage_content
 
     def format_summary(summary: Summary):
@@ -1571,7 +1571,7 @@ async def summarize_webpage(model: BaseChatModel, webpage_content: str) -> str:
 
 
 def split_and_rerank_search_results(embeddings: Embeddings, query: str, search_results: list[dict], max_chunks: int = 5):
-    # split webpage content into chunks
+    # 将网页内容切分为块
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1500, chunk_overlap=200, add_start_index=True
     )
@@ -1584,11 +1584,11 @@ def split_and_rerank_search_results(embeddings: Embeddings, query: str, search_r
     ]
     all_splits = text_splitter.split_documents(documents)
 
-    # index chunks
+    # 索引各块
     vector_store = InMemoryVectorStore(embeddings)
     vector_store.add_documents(documents=all_splits)
 
-    # retrieve relevant chunks
+    # 检索相关块
     retrieved_docs = vector_store.similarity_search(query, k=max_chunks)
     return retrieved_docs
 
@@ -1599,14 +1599,14 @@ def stitch_documents_by_url(documents: list[Document]) -> list[Document]:
     for doc in documents:
         snippet_hash = hashlib.sha256(doc.page_content.encode()).hexdigest()
         url = doc.metadata['url']
-        # deduplicate snippets by the content
+        # 按内容对片段去重
         if snippet_hash in url_to_snippet_hashes[url]:
             continue
 
         url_to_docs[url].append(doc)
         url_to_snippet_hashes[url].add(snippet_hash)
 
-    # stitch retrieved chunks into a single doc per URL
+    # 将检索到的块按 URL 拼接为单个文档
     stitched_docs = []
     for docs in url_to_docs.values():
         stitched_doc = Document(
@@ -1619,12 +1619,12 @@ def stitch_documents_by_url(documents: list[Document]) -> list[Document]:
 
 
 def get_today_str() -> str:
-    """Get current date in a human-readable format."""
+    """以人类可读的格式获取当前日期。"""
     return datetime.datetime.now().strftime("%a %b %-d, %Y")
 
 
 async def load_mcp_server_config(path: str) -> dict:
-    """Load MCP server configuration from a file."""
+    """从文件加载 MCP 服务器配置。"""
 
     def _load():
         with open(path, "r") as f:

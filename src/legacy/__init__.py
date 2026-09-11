@@ -1,3 +1,3 @@
-"""Planning, research, and report generation."""
+"""规划、研究与报告生成。"""
 
 __version__ = "0.0.15"

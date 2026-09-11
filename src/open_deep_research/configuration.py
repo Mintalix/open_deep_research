@@ -1,4 +1,4 @@
-"""Configuration management for the Open Deep Research system."""
+"""Open Deep Research 系统的配置管理。"""
 
 import os
 from enum import Enum
@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 
 class SearchAPI(Enum):
-    """Enumeration of available search API providers."""
+    """可用搜索 API 提供商的枚举。"""
     
     ANTHROPIC = "anthropic"
     OPENAI = "openai"
@@ -17,28 +17,28 @@ class SearchAPI(Enum):
     NONE = "none"
 
 class MCPConfig(BaseModel):
-    """Configuration for Model Context Protocol (MCP) servers."""
+    """模型上下文协议（MCP）服务器的配置。"""
     
     url: Optional[str] = Field(
         default=None,
         optional=True,
     )
-    """The URL of the MCP server"""
+    """MCP 服务器的 URL"""
     tools: Optional[List[str]] = Field(
         default=None,
         optional=True,
     )
-    """The tools to make available to the LLM"""
+    """向 LLM 提供的可用工具"""
     auth_required: Optional[bool] = Field(
         default=False,
         optional=True,
     )
-    """Whether the MCP server requires authentication"""
+    """该 MCP 服务器是否需要身份验证"""
 
 class Configuration(BaseModel):
-    """Main configuration class for the Deep Research agent."""
+    """深度研究智能体的主配置类。"""
     
-    # General Configuration
+    # 通用配置
     max_structured_output_retries: int = Field(
         default=3,
         metadata={
@@ -47,7 +47,7 @@ class Configuration(BaseModel):
                 "default": 3,
                 "min": 1,
                 "max": 10,
-                "description": "Maximum number of retries for structured output calls from models"
+                "description": "模型结构化输出调用的最大重试次数"
             }
         }
     )
@@ -57,7 +57,7 @@ class Configuration(BaseModel):
             "x_oap_ui_config": {
                 "type": "boolean",
                 "default": True,
-                "description": "Whether to allow the researcher to ask the user clarifying questions before starting research"
+                "description": "是否允许研究员在开始研究前向用户提出澄清性问题"
             }
         }
     )
@@ -70,23 +70,23 @@ class Configuration(BaseModel):
                 "min": 1,
                 "max": 20,
                 "step": 1,
-                "description": "Maximum number of research units to run concurrently. This will allow the researcher to use multiple sub-agents to conduct research. Note: with more concurrency, you may run into rate limits."
+                "description": "并发运行的研究单元最大数量。这将允许研究员使用多个子智能体开展研究。注意：并发越高，越容易触发速率限制。"
             }
         }
     )
-    # Research Configuration
+    # 研究配置
     search_api: SearchAPI = Field(
         default=SearchAPI.TAVILY,
         metadata={
             "x_oap_ui_config": {
                 "type": "select",
                 "default": "tavily",
-                "description": "Search API to use for research. NOTE: Make sure your Researcher Model supports the selected search API.",
+                "description": "研究使用的搜索 API。注意：请确保你的研究员模型支持所选的搜索 API。",
                 "options": [
                     {"label": "Tavily", "value": SearchAPI.TAVILY.value},
-                    {"label": "OpenAI Native Web Search", "value": SearchAPI.OPENAI.value},
-                    {"label": "Anthropic Native Web Search", "value": SearchAPI.ANTHROPIC.value},
-                    {"label": "None", "value": SearchAPI.NONE.value}
+                    {"label": "OpenAI 原生网页搜索", "value": SearchAPI.OPENAI.value},
+                    {"label": "Anthropic 原生网页搜索", "value": SearchAPI.ANTHROPIC.value},
+                    {"label": "无", "value": SearchAPI.NONE.value}
                 ]
             }
         }
@@ -100,7 +100,7 @@ class Configuration(BaseModel):
                 "min": 1,
                 "max": 10,
                 "step": 1,
-                "description": "Maximum number of research iterations for the Research Supervisor. This is the number of times the Research Supervisor will reflect on the research and ask follow-up questions."
+                "description": "研究监督者的最大研究迭代次数，即研究监督者对已有研究进行反思并提出后续问题的次数。"
             }
         }
     )
@@ -113,18 +113,18 @@ class Configuration(BaseModel):
                 "min": 1,
                 "max": 30,
                 "step": 1,
-                "description": "Maximum number of tool calling iterations to make in a single researcher step."
+                "description": "单个研究员步骤中工具调用的最大迭代次数。"
             }
         }
     )
-    # Model Configuration
+    # 模型配置
     summarization_model: str = Field(
         default="openai:gpt-4.1-mini",
         metadata={
             "x_oap_ui_config": {
                 "type": "text",
                 "default": "openai:gpt-4.1-mini",
-                "description": "Model for summarizing research results from Tavily search results"
+                "description": "用于对 Tavily 搜索结果进行摘要的模型"
             }
         }
     )
@@ -134,7 +134,7 @@ class Configuration(BaseModel):
             "x_oap_ui_config": {
                 "type": "number",
                 "default": 8192,
-                "description": "Maximum output tokens for summarization model"
+                "description": "摘要模型的最大输出 token 数"
             }
         }
     )
@@ -146,7 +146,7 @@ class Configuration(BaseModel):
                 "default": 50000,
                 "min": 1000,
                 "max": 200000,
-                "description": "Maximum character length for webpage content before summarization"
+                "description": "网页内容在进行摘要前的最大字符长度"
             }
         }
     )
@@ -156,7 +156,7 @@ class Configuration(BaseModel):
             "x_oap_ui_config": {
                 "type": "text",
                 "default": "openai:gpt-4.1",
-                "description": "Model for conducting research. NOTE: Make sure your Researcher Model supports the selected search API."
+                "description": "执行研究的模型。注意：请确保你的研究员模型支持所选的搜索 API。"
             }
         }
     )
@@ -166,7 +166,7 @@ class Configuration(BaseModel):
             "x_oap_ui_config": {
                 "type": "number",
                 "default": 10000,
-                "description": "Maximum output tokens for research model"
+                "description": "研究模型的最大输出 token 数"
             }
         }
     )
@@ -176,7 +176,7 @@ class Configuration(BaseModel):
             "x_oap_ui_config": {
                 "type": "text",
                 "default": "openai:gpt-4.1",
-                "description": "Model for compressing research findings from sub-agents. NOTE: Make sure your Compression Model supports the selected search API."
+                "description": "用于压缩子智能体研究发现的模型。注意：请确保你的压缩模型支持所选的搜索 API。"
             }
         }
     )
@@ -186,7 +186,7 @@ class Configuration(BaseModel):
             "x_oap_ui_config": {
                 "type": "number",
                 "default": 8192,
-                "description": "Maximum output tokens for compression model"
+                "description": "压缩模型的最大输出 token 数"
             }
         }
     )
@@ -196,7 +196,7 @@ class Configuration(BaseModel):
             "x_oap_ui_config": {
                 "type": "text",
                 "default": "openai:gpt-4.1",
-                "description": "Model for writing the final report from all research findings"
+                "description": "根据全部研究发现撰写最终报告的模型"
             }
         }
     )
@@ -206,18 +206,18 @@ class Configuration(BaseModel):
             "x_oap_ui_config": {
                 "type": "number",
                 "default": 10000,
-                "description": "Maximum output tokens for final report model"
+                "description": "最终报告模型的最大输出 token 数"
             }
         }
     )
-    # MCP server configuration
+    # MCP 服务器配置
     mcp_config: Optional[MCPConfig] = Field(
         default=None,
         optional=True,
         metadata={
             "x_oap_ui_config": {
                 "type": "mcp",
-                "description": "MCP server configuration"
+                "description": "MCP 服务器配置"
             }
         }
     )
@@ -227,7 +227,7 @@ class Configuration(BaseModel):
         metadata={
             "x_oap_ui_config": {
                 "type": "text",
-                "description": "Any additional instructions to pass along to the Agent regarding the MCP tools that are available to it."
+                "description": "需要传递给智能体的、关于其可用 MCP 工具的任何附加说明。"
             }
         }
     )
@@ -237,7 +237,7 @@ class Configuration(BaseModel):
     def from_runnable_config(
         cls, config: Optional[RunnableConfig] = None
     ) -> "Configuration":
-        """Create a Configuration instance from a RunnableConfig."""
+        """从 RunnableConfig 创建 Configuration 实例。"""
         configurable = config.get("configurable", {}) if config else {}
         field_names = list(cls.model_fields.keys())
         values: dict[str, Any] = {
@@ -247,6 +247,6 @@ class Configuration(BaseModel):
         return cls(**{k: v for k, v in values.items() if v is not None})
 
     class Config:
-        """Pydantic configuration."""
+        """Pydantic 配置。"""
         
         arbitrary_types_allowed = True

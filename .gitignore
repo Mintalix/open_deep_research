@@ -66,4 +66,7 @@ node_modules/
 tmp/
 temp/
 
+# 图片翻译脚本的手动原图缓存（生成的中文图片 images/zh-CN/ 需要提交，不在此列）
+images/_originals/
+
 .langgraph_api

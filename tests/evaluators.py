@@ -23,18 +23,18 @@ def _format_input_query(inputs: dict) -> str:
 
 
 class OverallQualityScore(BaseModel):
-    """Score the overall quality of the report against specific criteria."""
-    research_depth: int = Field(description="Integer score 1-5 showing whether the report meets the provided criteria (1 = doesn't meet at all, 5 = meets all criteria).")
-    source_quality: int = Field(description="Integer score 1-5 showing whether the report meets the provided criteria (1 = doesn't meet at all, 5 = meets all criteria).")
-    analytical_rigor: int = Field(description="Integer score 1-5 showing whether the report meets the provided criteria (1 = doesn't meet at all, 5 = meets all criteria).")
-    practical_value: int = Field(description="Integer score 1-5 showing whether the report meets the provided criteria (1 = doesn't meet at all, 5 = meets all criteria).")
-    balance_and_objectivity: int = Field(description="Integer score 1-5 showing whether the report meets the provided criteria (1 = doesn't meet at all, 5 = meets all criteria).")
-    writing_quality: int = Field(description="Integer score 1-5 showing whether the report meets the provided criteria (1 = doesn't meet at all, 5 = meets all criteria).")
+    """根据具体评分标准为报告的总体质量打分。"""
+    research_depth: int = Field(description="1-5 的整数评分,表示报告满足所提供评分标准的程度(1 = 完全不满足,5 = 满足全部标准)。")
+    source_quality: int = Field(description="1-5 的整数评分,表示报告满足所提供评分标准的程度(1 = 完全不满足,5 = 满足全部标准)。")
+    analytical_rigor: int = Field(description="1-5 的整数评分,表示报告满足所提供评分标准的程度(1 = 完全不满足,5 = 满足全部标准)。")
+    practical_value: int = Field(description="1-5 的整数评分,表示报告满足所提供评分标准的程度(1 = 完全不满足,5 = 满足全部标准)。")
+    balance_and_objectivity: int = Field(description="1-5 的整数评分,表示报告满足所提供评分标准的程度(1 = 完全不满足,5 = 满足全部标准)。")
+    writing_quality: int = Field(description="1-5 的整数评分,表示报告满足所提供评分标准的程度(1 = 完全不满足,5 = 满足全部标准)。")
 
 def eval_overall_quality(inputs: dict, outputs: dict):
     query = _format_input_query(inputs)
     final_report = outputs["final_report"]
-    user_input_content = f"""User input: {query}\n\nReport: \n\n{final_report}\n\nEvaluate whether the report meets the criteria and provide detailed justification for your evaluation."""
+    user_input_content = f"""用户输入:{query}\n\n报告:\n\n{final_report}\n\n请评估报告是否满足上述标准,并为你的评估提供详细理由。"""
     if isinstance(eval_model, ChatAnthropic):
         user_input_content = [{
             "type": "text",
@@ -56,14 +56,14 @@ def eval_overall_quality(inputs: dict, outputs: dict):
 
 
 class RelevanceScore(BaseModel):
-    """Score the report relevance against specific criteria."""
-    reasoning: str = Field(description="The reason for the score, including specific examples from the report.")
-    score: int = Field(description="Integer score 1-5 showing whether the report meets the provided criteria for relevance (1 = doesn't meet at all, 5 = meets all criteria).")
+    """根据具体评分标准为报告的相关性打分。"""
+    reasoning: str = Field(description="评分理由,需引用报告中的具体示例。")
+    score: int = Field(description="1-5 的整数评分,表示报告满足相关性评分标准的程度(1 = 完全不满足,5 = 满足全部标准)。")
 
 def eval_relevance(inputs: dict, outputs: dict):
     query = _format_input_query(inputs)
     final_report = outputs["final_report"]
-    user_input_content = f"""User input: {query}\n\nReport: \n\n{final_report}\n\nEvaluate whether the report meets the criteria and provide detailed justification for your evaluation."""
+    user_input_content = f"""用户输入:{query}\n\n报告:\n\n{final_report}\n\n请评估报告是否满足上述标准,并为你的评估提供详细理由。"""
     if isinstance(eval_model, ChatAnthropic):
         user_input_content = [{
             "type": "text",
@@ -79,9 +79,9 @@ def eval_relevance(inputs: dict, outputs: dict):
 
 
 class StructureScore(BaseModel):
-    """Score the report structure against specific criteria."""
-    reasoning: str = Field(description="The reason for the score, including specific examples from the report.")
-    score: int = Field(description="Integer score 1-5 showing whether the report meets the provided criteria for structure and flow (1 = doesn't meet at all, 5 = meets all criteria).")
+    """根据具体评分标准为报告的结构打分。"""
+    reasoning: str = Field(description="评分理由,需引用报告中的具体示例。")
+    score: int = Field(description="1-5 的整数评分,表示报告满足结构与行文流畅度评分标准的程度(1 = 完全不满足,5 = 满足全部标准)。")
 
 def eval_structure(inputs: dict, outputs: dict):
     query = _format_input_query(inputs)
@@ -101,9 +101,9 @@ def eval_structure(inputs: dict, outputs: dict):
 
 
 class CorrectnessScore(BaseModel):
-    """Score the report correctness against specific criteria."""
-    reasoning: str = Field(description="The reason for the score, including specific examples from the report.")
-    score: int = Field(description="Integer score 1-5 showing whether the report meets the provided criteria for correctness (1 = doesn't meet at all, 5 = meets all criteria).")
+    """根据具体评分标准为报告的正确性打分。"""
+    reasoning: str = Field(description="评分理由,需引用报告中的具体示例。")
+    score: int = Field(description="1-5 的整数评分,表示报告满足正确性评分标准的程度(1 = 完全不满足,5 = 满足全部标准)。")
 
 def eval_correctness(inputs: dict, outputs: dict, reference_outputs: dict):
     query = _format_input_query(inputs)
@@ -123,13 +123,13 @@ def eval_correctness(inputs: dict, outputs: dict, reference_outputs: dict):
     return {"key": "correctness_score", "score": eval_result.score / 5, "comment": eval_result.reasoning}
 
 class GroundednessClaim(BaseModel):
-    """A claim from the report, and whether or not it is grounded in the context"""
-    claim: str = Field(description="The claim extracted from the report.")
-    grounded: bool = Field(description="Whether the claim is grounded in the context.")
+    """报告中的一条论断,以及它是否有上下文依据"""
+    claim: str = Field(description="从报告中提取的论断。")
+    grounded: bool = Field(description="该论断是否有上下文依据。")
 
 class GroundednessScore(BaseModel):
-    """Extract the claims and whether they are grounded in the context"""
-    claims: list[GroundednessClaim] = Field(description="All claims extracted from the report, and whether or not they are grounded in the context.")
+    """提取各条论断,并判断它们是否有上下文依据"""
+    claims: list[GroundednessClaim] = Field(description="从报告中提取的全部论断,以及它们是否有上下文依据。")
 
 def eval_groundedness(inputs: dict, outputs: dict):
     final_report = outputs["final_report"]
@@ -146,15 +146,15 @@ def eval_groundedness(inputs: dict, outputs: dict):
     eval_result = cast(GroundednessScore, eval_model.with_structured_output(GroundednessScore).with_retry(stop_after_attempt=3).invoke([
         {"role": "user", "content": user_input_content},
     ]))
-    # normalize to 0-1
+    # 归一化到 0-1
     grounded_claims = [claim for claim in eval_result.claims if claim.grounded]
     return {"key": "groundedness_score", "score": len(grounded_claims) / len(eval_result.claims), "comment": str(eval_result.claims)}
 
 
 class CompletenessScore(BaseModel):
-    """Score the report completeness against specific criteria."""
-    reasoning: str = Field(description="The reason for the score, including specific examples from the report.")
-    score: int = Field(description="Integer score 1-5 showing whether the report meets the provided criteria for completeness (1 = doesn't meet at all, 5 = meets all criteria).")
+    """根据具体评分标准为报告的完整性打分。"""
+    reasoning: str = Field(description="评分理由,需引用报告中的具体示例。")
+    score: int = Field(description="1-5 的整数评分,表示报告满足完整性评分标准的程度(1 = 完全不满足,5 = 满足全部标准)。")
 
 def eval_completeness(inputs: dict, outputs: dict):
     query = _format_input_query(inputs)

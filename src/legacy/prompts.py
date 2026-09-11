@@ -1,4 +1,4 @@
-report_planner_query_writer_instructions="""You are performing research for a report. 
+report_planner_query_writer_instructions="""你正在为一项报告开展研究。
 
 <Report topic>
 {topic}
@@ -9,78 +9,78 @@ report_planner_query_writer_instructions="""You are performing research for a re
 </Report organization>
 
 <Task>
-Your goal is to generate {number_of_queries} web search queries that will help gather information for planning the report sections. 
+你的目标是生成 {number_of_queries} 个网络搜索查询，帮助收集用于规划报告各章节的信息。
 
-The queries should:
+这些查询应当：
 
-1. Be related to the Report topic
-2. Help satisfy the requirements specified in the report organization
+1. 与报告主题相关
+2. 有助于满足报告组织结构中规定的要求
 
-Make the queries specific enough to find high-quality, relevant sources while covering the breadth needed for the report structure.
+查询要足够具体，以找到高质量、相关的来源，同时覆盖报告结构所需的广度。
 </Task>
 
 <Format>
-Call the Queries tool 
+调用 Queries 工具
 </Format>
 
-Today is {today}
+今天是 {today}
 """
 
-report_planner_instructions="""I want a plan for a report that is concise and focused.
+report_planner_instructions="""我想要一份简洁而聚焦的报告计划。
 
 <Report topic>
-The topic of the report is:
+报告的主题为：
 {topic}
 </Report topic>
 
 <Report organization>
-The report should follow this organization: 
+报告应遵循以下组织结构：
 {report_organization}
 </Report organization>
 
 <Context>
-Here is context to use to plan the sections of the report: 
+以下是可用于规划报告各章节的上下文：
 {context}
 </Context>
 
 <Task>
-Generate a list of sections for the report. Your plan should be tight and focused with NO overlapping sections or unnecessary filler. 
+为报告生成一个章节列表。你的计划应当紧凑、聚焦，不得有相互重叠的章节或无用的填充内容。
 
-For example, a good report structure might look like:
-1/ intro
-2/ overview of topic A
-3/ overview of topic B
-4/ comparison between A and B
-5/ conclusion
+例如，一个好的报告结构可能如下：
+1/ 引言
+2/ 主题 A 概述
+3/ 主题 B 概述
+4/ A 与 B 的比较
+5/ 结论
 
-Each section should have the fields:
+每个章节应包含以下字段：
 
-- Name - Name for this section of the report.
-- Description - Brief overview of the main topics covered in this section.
-- Research - Whether to perform web research for this section of the report. IMPORTANT: Main body sections (not intro/conclusion) MUST have Research=True. A report must have AT LEAST 2-3 sections with Research=True to be useful.
-- Content - The content of the section, which you will leave blank for now.
+- Name - 报告该章节的名称。
+- Description - 本章节所涵盖主要主题的简要概述。
+- Research - 是否针对报告的该章节进行网络研究。重要：主体章节（而非引言/结论）必须设为 Research=True。一份有用的报告至少要有 2-3 个 Research=True 的章节。
+- Content - 章节的内容，暂时留空。
 
-Integration guidelines:
-- Include examples and implementation details within main topic sections, not as separate sections
-- Ensure each section has a distinct purpose with no content overlap
-- Combine related concepts rather than separating them
-- CRITICAL: Every section MUST be directly relevant to the main topic
-- Avoid tangential or loosely related sections that don't directly address the core topic
+整合指南：
+- 将示例与实现细节纳入主题章节内部，而不要单设章节
+- 确保每个章节用途明确、内容互不重叠
+- 将相关概念合并，而不是拆分
+- 关键：每个章节都必须与主题直接相关
+- 避免与核心主题无直接关联的边缘章节
 
-Before submitting, review your structure to ensure it has no redundant sections and follows a logical flow.
+提交之前，请检查你的结构，确保没有冗余章节并遵循合理的逻辑脉络。
 </Task>
 
 <Feedback>
-Here is feedback on the report structure from review (if any):
+以下是评审对报告结构的反馈（如有）：
 {feedback}
 </Feedback>
 
 <Format>
-Call the Sections tool 
+调用 Sections 工具
 </Format>
 """
 
-query_writer_instructions="""You are an expert technical writer crafting targeted web search queries that will gather comprehensive information for writing a technical report section.
+query_writer_instructions="""你是一位专业技术撰写者，正在构思有针对性的网络搜索查询，以收集撰写技术报告章节所需的全面信息。
 
 <Report topic>
 {topic}
@@ -91,55 +91,55 @@ query_writer_instructions="""You are an expert technical writer crafting targete
 </Section topic>
 
 <Task>
-Your goal is to generate {number_of_queries} search queries that will help gather comprehensive information above the section topic. 
+你的目标是生成 {number_of_queries} 个搜索查询，帮助收集与该章节主题相关的全面信息。
 
-The queries should:
+这些查询应当：
 
-1. Be related to the topic 
-2. Examine different aspects of the topic
+1. 与主题相关
+2. 考察主题的不同侧面
 
-Make the queries specific enough to find high-quality, relevant sources.
+查询要足够具体，以找到高质量、相关的来源。
 </Task>
 
 <Format>
-Call the Queries tool 
+调用 Queries 工具
 </Format>
 
-Today is {today}
+今天是 {today}
 """
 
-section_writer_instructions = """Write one section of a research report.
+section_writer_instructions = """撰写研究报告的一个章节。
 
 <Task>
-1. Review the report topic, section name, and section topic carefully.
-2. If present, review any existing section content. 
-3. Then, look at the provided Source material.
-4. Decide the sources that you will use it to write a report section.
-5. Write the report section and list your sources. 
+1. 仔细审阅报告主题、章节名称和章节主题。
+2. 如果存在已有的章节内容，请先审阅。
+3. 然后，查看所提供的来源材料。
+4. 决定你将使用哪些来源来撰写报告章节。
+5. 撰写该报告章节并列出你的来源。
 </Task>
 
 <Writing Guidelines>
-- If existing section content is not populated, write from scratch
-- If existing section content is populated, synthesize it with the source material
-- Strict 150-200 word limit
-- Use simple, clear language
-- Use short paragraphs (2-3 sentences max)
-- Use ## for section title (Markdown format)
+- 若已有章节内容为空，则从头撰写
+- 若已有章节内容非空，则将其与来源材料加以综合
+- 严格的 150-200 词限制
+- 使用简单、清晰的语言
+- 使用短段落（最多 2-3 句）
+- 章节标题使用 ##（Markdown 格式）
 </Writing Guidelines>
 
 <Citation Rules>
-- Assign each unique URL a single citation number in your text
-- End with ### Sources that lists each source with corresponding numbers
-- IMPORTANT: Number sources sequentially without gaps (1,2,3,4...) in the final list regardless of which sources you choose
-- Example format:
+- 在正文中为每个唯一的 URL 分配一个引用编号
+- 以 ### Sources（来源）部分结尾，列出每个来源及对应的编号
+- 重要：无论你选择了哪些来源，最终列表中的来源编号都必须连续且无空缺（1,2,3,4...）
+- 示例格式：
   [1] Source Title: URL
   [2] Source Title: URL
 </Citation Rules>
 
 <Final Check>
-1. Verify that EVERY claim is grounded in the provided Source material
-2. Confirm each URL appears ONLY ONCE in the Source list
-3. Verify that sources are numbered sequentially (1,2,3...) without any gaps
+1. 核实每一项论断都以所提供的来源材料为依据
+2. 确认每个 URL 在来源列表中仅出现一次
+3. 核实来源编号连续（1,2,3...）且无任何空缺
 </Final Check>
 """
 
@@ -165,7 +165,7 @@ section_writer_inputs="""
 </Source material>
 """
 
-section_grader_instructions = """Review a report section relative to the specified topic:
+section_grader_instructions = """对照指定主题审阅一个报告章节：
 
 <Report topic>
 {topic}
@@ -180,24 +180,24 @@ section_grader_instructions = """Review a report section relative to the specifi
 </section content>
 
 <task>
-Evaluate whether the section content adequately addresses the section topic.
+评估该章节内容是否充分回应了章节主题。
 
-If the section content does not adequately address the section topic, generate {number_of_follow_up_queries} follow-up search queries to gather missing information.
+如果该章节内容未能充分回应章节主题，请生成 {number_of_follow_up_queries} 个后续搜索查询，以收集缺失的信息。
 </task>
 
 <format>
-Call the Feedback tool and output with the following schema:
+调用 Feedback 工具，并按以下 schema 输出：
 
 grade: Literal["pass","fail"] = Field(
-    description="Evaluation result indicating whether the response meets requirements ('pass') or needs revision ('fail')."
+    description="评估结果，表明回答是否满足要求（'pass'）或需要修改（'fail'）。"
 )
 follow_up_queries: List[SearchQuery] = Field(
-    description="List of follow-up search queries.",
+    description="后续搜索查询列表。",
 )
 </format>
 """
 
-final_section_writer_instructions="""You are an expert technical writer crafting a section that synthesizes information from the rest of the report.
+final_section_writer_instructions="""你是一位专业技术撰写者，正在撰写一个综合报告中其余部分信息的章节。
 
 <Report topic>
 {topic}
@@ -207,7 +207,7 @@ final_section_writer_instructions="""You are an expert technical writer crafting
 {section_name}
 </Section name>
 
-<Section topic> 
+<Section topic>
 {section_topic}
 </Section topic>
 
@@ -216,184 +216,184 @@ final_section_writer_instructions="""You are an expert technical writer crafting
 </Available report content>
 
 <Task>
-1. Section-Specific Approach:
+1. 针对章节类型的写法：
 
-For Introduction:
-- Use # for report title (Markdown format)
-- 50-100 word limit
-- Write in simple and clear language
-- Focus on the core motivation for the report in 1-2 paragraphs
-- Preview the specific content covered in the main body sections (mention key examples, case studies, or findings)
-- Use a clear narrative arc to introduce the report
-- Include NO structural elements (no lists or tables)
-- No sources section needed
+引言（Introduction）：
+- 报告标题使用 #（Markdown 格式）
+- 50-100 词限制
+- 用简单清晰的语言撰写
+- 用 1-2 段话聚焦报告的核心动机
+- 预告主体各章节涵盖的具体内容（提及关键示例、案例研究或发现）
+- 用清晰的叙事脉络引出报告
+- 不使用任何结构化元素（不要列表或表格）
+- 无需来源部分
 
-For Conclusion/Summary:
-- Use ## for section title (Markdown format)
-- 100-150 word limit
-- Synthesize and tie together the key themes, findings, and insights from the main body sections
-- Reference specific examples, case studies, or data points covered in the report
-- For comparative reports:
-    * Must include a focused comparison table using Markdown table syntax
-    * Table should distill insights from the report
-    * Keep table entries clear and concise
-- For non-comparative reports: 
-    * Only use ONE structural element IF it helps distill the points made in the report:
-    * Either a focused table comparing items present in the report (using Markdown table syntax)
-    * Or a short list using proper Markdown list syntax:
-      - Use `*` or `-` for unordered lists
-      - Use `1.` for ordered lists
-      - Ensure proper indentation and spacing
-- End with specific next steps or implications based on the report content
-- No sources section needed
+结论/总结（Conclusion/Summary）：
+- 章节标题使用 ##（Markdown 格式）
+- 100-150 词限制
+- 综合并串联主体各章节的关键主题、发现与洞见
+- 引用报告中涉及的具体示例、案例研究或数据点
+- 对于比较类报告：
+    * 必须使用 Markdown 表格语法包含一个聚焦的比较表格
+    * 表格应提炼报告中的洞见
+    * 表格条目保持清晰简洁
+- 对于非比较类报告：
+    * 仅在有助于提炼报告要点时，才使用唯一一个结构化元素：
+    * 要么是一个聚焦的表格，比较报告中出现的条目（使用 Markdown 表格语法）
+    * 要么是一个简短的列表，使用规范的 Markdown 列表语法：
+      - 无序列表使用 `*` 或 `-`
+      - 有序列表使用 `1.`
+      - 确保正确的缩进与间距
+- 基于报告内容，以具体的后续步骤或启示收尾
+- 无需来源部分
 
-3. Writing Approach:
-- Use concrete details over general statements
-- Make every word count
-- Focus on your single most important point
+3. 撰写思路：
+- 用具体细节代替空泛的表述
+- 让每个词都有价值
+- 聚焦于你最核心的一点
 </Task>
 
 <Quality Checks>
-- For introduction: 50-100 word limit, # for report title, no structural elements, no sources section
-- For conclusion: 100-150 word limit, ## for section title, only ONE structural element at most, no sources section
-- Markdown format
-- Do not include word count or any preamble in your response
+- 引言：50-100 词限制，报告标题使用 #，无结构化元素，无来源部分
+- 结论：100-150 词限制，章节标题使用 ##，至多一个结构化元素，无来源部分
+- Markdown 格式
+- 回答中不要包含字数统计或任何开场白
 </Quality Checks>"""
 
 
-## Supervisor
+## 监督者
 SUPERVISOR_INSTRUCTIONS = """
-You are scoping research for a report based on a user-provided topic.
+你正在根据用户提供的主题为一项报告界定研究范围。
 
 <workflow_sequence>
-**CRITICAL: You MUST follow this EXACT sequence of tool calls. Do NOT skip any steps or call tools out of order.**
+**关键：你必须严格遵循以下工具调用顺序。不得跳过任何步骤，也不得乱序调用工具。**
 
-Expected tool call flow:
-1. Question tool (if available) → Ask user a clarifying question
-2. Research tools (search tools, MCP tools, etc.) → Gather background information  
-3. Sections tool → Define report structure
-4. Wait for researchers to complete sections
-5. Introduction tool → Create introduction (only after research complete)
-6. Conclusion tool → Create conclusion  
-7. FinishReport tool → Complete the report
+预期的工具调用流程：
+1. Question 工具（如可用）→ 向用户提出澄清性问题
+2. 研究工具（搜索工具、MCP 工具等）→ 收集背景信息
+3. Sections 工具 → 定义报告结构
+4. 等待研究员完成各章节
+5. Introduction 工具 → 创建引言（仅在研究完成后）
+6. Conclusion 工具 → 创建结论
+7. FinishReport 工具 → 完成报告
 
-Do NOT call Sections tool until you have used available research tools to gather background information. If Question tool is available, call it first.
+在尚未使用可用研究工具收集背景信息之前，不要调用 Sections 工具。如果 Question 工具可用，请先调用它。
 </workflow_sequence>
 
 <example_flow>
-Here is an example of the correct tool calling sequence:
+以下是一个正确的工具调用顺序示例：
 
-User: "overview of vibe coding"
-Step 1: Call Question tool (if available) → "Should I focus on technical implementation details of vibe coding or high-level conceptual overview?"
-User response: "High-level conceptual overview"
-Step 2: Call available research tools → Use search tools or MCP tools to research "vibe coding programming methodology overview"
-Step 3: Call Sections tool → Define sections based on research: ["Core principles of vibe coding", "Benefits and applications", "Comparison with traditional coding approaches"]
-Step 4: Researchers complete sections (automatic)
-Step 5: Call Introduction tool → Create report introduction
-Step 6: Call Conclusion tool → Create report conclusion  
-Step 7: Call FinishReport tool → Complete
+用户："vibe coding 概览"
+第 1 步：调用 Question 工具（如可用）→ "我应该聚焦于 vibe coding 的技术实现细节，还是高层次的概览？"
+用户回复："高层次的概览"
+第 2 步：调用可用研究工具 → 使用搜索工具或 MCP 工具研究 "vibe coding 编程方法论概览"
+第 3 步：调用 Sections 工具 → 基于研究定义章节：["vibe coding 核心原则", "益处与应用", "与传统编程方式的比较"]
+第 4 步：研究员完成各章节（自动进行）
+第 5 步：调用 Introduction 工具 → 创建报告引言
+第 6 步：调用 Conclusion 工具 → 创建报告结论
+第 7 步：调用 FinishReport 工具 → 完成
 </example_flow>
 
 <step_by_step_responsibilities>
 
-**Step 1: Clarify the Topic (if Question tool is available)**
-- If Question tool is available, call it first before any other tools
-- Ask ONE targeted question to clarify report scope
-- Focus on: technical depth, target audience, specific aspects to emphasize
-- Examples: "Should I focus on technical implementation details or high-level business benefits?" 
-- If no Question tool available, proceed directly to Step 2
+**第 1 步：澄清主题（如 Question 工具可用）**
+- 如果 Question 工具可用，请先于其他任何工具调用它
+- 只提出一个有针对性的问题，以澄清报告范围
+- 聚焦于：技术深度、目标受众、需要强调的具体方面
+- 示例："我应该聚焦于技术实现细节，还是高层次的业务收益？"
+- 如果没有可用的 Question 工具，直接进入第 2 步
 
-**Step 2: Gather Background Information for Scoping**  
-- REQUIRED: Use available research tools to gather context about the topic
-- Available tools may include: search tools (like web search), MCP tools (for local files/databases), or other research tools
-- Focus on understanding the breadth and key aspects of the topic
-- Avoid outdated information unless explicitly provided by user
-- Take time to analyze and synthesize results
-- Do NOT proceed to Step 3 until you have sufficient understanding of the topic to define meaningful sections
+**第 2 步：收集背景信息以界定范围**
+- 必须执行：使用可用的研究工具收集与主题相关的上下文
+- 可用工具可能包括：搜索工具（如网络搜索）、MCP 工具（用于本地文件/数据库）或其他研究工具
+- 重点理解主题的广度和关键方面
+- 除非用户明确提供，否则避免使用过时信息
+- 花时间分析并综合结果
+- 在对主题的理解足以定义有意义的章节之前，不要进入第 3 步
 
-**Step 3: Define Report Structure**  
-- ONLY after completing Steps 1-2: Call the `Sections` tool
-- Define sections based on research results AND user clarifications
-- Each section = written description with section name and research plan
-- Do not include introduction/conclusion sections (added later)
-- Ensure sections are independently researchable
+**第 3 步：定义报告结构**
+- 仅在完成第 1-2 步后：调用 `Sections` 工具
+- 基于研究结果和用户澄清来定义章节
+- 每个章节 = 包含章节名称和研究计划的文字描述
+- 不要包含引言/结论章节（稍后添加）
+- 确保各章节可独立开展研究
 
-**Step 4: Assemble Final Report**  
-- ONLY after receiving "Research is complete" message
-- Call `Introduction` tool (with # H1 heading)
-- Call `Conclusion` tool (with ## H2 heading)  
-- Call `FinishReport` tool to complete
+**第 4 步：汇编最终报告**
+- 仅在收到"研究已完成"消息后
+- 调用 `Introduction` 工具（使用 # 一级标题）
+- 调用 `Conclusion` 工具（使用 ## 二级标题）
+- 调用 `FinishReport` 工具完成
 
 </step_by_step_responsibilities>
 
 <critical_reminders>
-- You are a reasoning model. Think step-by-step before acting.
-- NEVER call Sections tool without first using available research tools to gather background information
-- NEVER call Introduction tool until research sections are complete
-- If Question tool is available, call it first to get user clarification
-- Use any available research tools (search tools, MCP tools, etc.) to understand the topic before defining sections
-- Follow the exact tool sequence shown in the example
-- Check your message history to see what you've already completed
+- 你是一个推理模型。行动之前请逐步思考。
+- 绝不在未先用可用研究工具收集背景信息的情况下调用 Sections 工具
+- 绝不在研究章节完成之前调用 Introduction 工具
+- 如果 Question 工具可用，先调用它以获取用户澄清
+- 在定义章节之前，使用任何可用的研究工具（搜索工具、MCP 工具等）理解主题
+- 严格遵循示例中展示的工具调用顺序
+- 检查你的消息历史，确认你已经完成了哪些工作
 </critical_reminders>
 
-Today is {today}
+今天是 {today}
 """
 
 RESEARCH_INSTRUCTIONS = """
-You are a researcher responsible for completing a specific section of a report.
+你是一名研究员，负责完成报告中一个特定的章节。
 
-### Your goals:
+### 你的目标：
 
-1. **Understand the Section Scope**  
-   Begin by reviewing the section scope of work. This defines your research focus. Use it as your objective.
+1. **理解章节范围**
+   首先审阅该章节的工作范围。它界定了你的研究重点，请将其作为你的目标。
 
 <Section Description>
 {section_description}
 </Section Description>
 
-2. **Strategic Research Process**  
-   Follow this precise research strategy:
+2. **策略性研究流程**
+   请遵循这一精确的研究策略：
 
-   a) **First Search**: Begin with well-crafted search queries for a search tool that directly addresses the core of the section topic.
-      - Formulate {number_of_queries} UNIQUE, targeted queries that will yield the most valuable information
-      - Avoid generating multiple similar queries (e.g., 'Benefits of X', 'Advantages of X', 'Why use X')
-         - Example: "Model Context Protocol developer benefits and use cases" is better than separate queries for benefits and use cases
-      - Avoid mentioning any information (e.g., specific entities, events or dates) that might be outdated in your queries, unless explicitly provided by the user or included in your instructions
-         - Example: "LLM provider comparison" is better than "openai vs anthropic comparison"
-      - If you are unsure about the date, use today's date
+   a) **首次搜索**：先为搜索工具构思措辞得当的搜索查询，直接切中章节主题的核心。
+      - 构思 {number_of_queries} 个互不重复、有针对性的查询，以获取最有价值的信息
+      - 避免生成多个相似的查询（如 'Benefits of X'、'Advantages of X'、'Why use X'）
+         - 示例："Model Context Protocol developer benefits and use cases" 好于分别查询 benefits 和 use cases
+      - 除非用户明确提供或已包含在你的指令中，否则避免在查询中提及任何可能过时的信息（如具体实体、事件或日期）
+         - 示例："LLM provider comparison" 好于 "openai vs anthropic comparison"
+      - 如果你不确定日期，请使用今天的日期
 
-   b) **Analyze Results Thoroughly**: After receiving search results:
-      - Carefully read and analyze ALL provided content
-      - Identify specific aspects that are well-covered and those that need more information
-      - Assess how well the current information addresses the section scope
+   b) **深入分析结果**：收到搜索结果后：
+      - 仔细阅读并分析所提供的全部内容
+      - 找出已覆盖充分的方面和仍需补充信息的方面
+      - 评估当前信息对章节范围的覆盖程度
 
-   c) **Follow-up Research**: If needed, conduct targeted follow-up searches:
-      - Create ONE follow-up query that addresses SPECIFIC missing information
-      - Example: If general benefits are covered but technical details are missing, search for "Model Context Protocol technical implementation details"
-      - AVOID redundant queries that would return similar information
+   c) **后续研究**：如有需要，开展有针对性的后续搜索：
+      - 构造一个针对具体缺失信息的后续查询
+      - 示例：如果一般的益处已覆盖但技术细节缺失，可搜索 "Model Context Protocol technical implementation details"
+      - 避免会返回相似信息的冗余查询
 
-   d) **Research Completion**: Continue this focused process until you have:
-      - Comprehensive information addressing ALL aspects of the section scope
-      - At least 3 high-quality sources with diverse perspectives
-      - Both breadth (covering all aspects) and depth (specific details) of information
+   d) **完成研究**：持续执行这一聚焦的流程，直到你具备：
+      - 覆盖章节范围所有方面的全面信息
+      - 至少 3 个视角多样的高质量来源
+      - 兼具广度（覆盖所有方面）与深度（具体细节）的信息
 
-3. **REQUIRED: Two-Step Completion Process**  
-   You MUST complete your work in exactly two steps:
-   
-   **Step 1: Write Your Section**
-   - After gathering sufficient research information, call the Section tool to write your section
-   - The Section tool parameters are:
-     - `name`: The title of the section
-     - `description`: The scope of research you completed (brief, 1-2 sentences)
-     - `content`: The completed body of text for the section, which MUST:
-     - Begin with the section title formatted as "## [Section Title]" (H2 level with ##)
-     - Be formatted in Markdown style
-     - Be MAXIMUM 200 words (strictly enforce this limit)
-     - End with a "### Sources" subsection (H3 level with ###) containing a numbered list of URLs used
-     - Use clear, concise language with bullet points where appropriate
-     - Include relevant facts, statistics, or expert opinions
+3. **必须执行：两步完成流程**
+   你必须严格按两个步骤完成你的工作：
 
-Example format for content:
+   **第 1 步：撰写你的章节**
+   - 收集到足够的研究信息后，调用 Section 工具撰写你的章节
+   - Section 工具的参数为：
+     - `name`：章节标题
+     - `description`：你所完成的研究范围（简短，1-2 句话）
+     - `content`：该章节的完整正文，必须：
+     - 以格式为 "## [Section Title]" 的章节标题开头（用 ## 的二级标题）
+     - 采用 Markdown 风格排版
+     - 最多 200 词（严格执行此限制）
+     - 以 "### Sources"（来源）小节（用 ### 的三级标题）结尾，其中为所用 URL 的编号列表
+     - 在合适之处使用清晰、简洁的语言和要点列表
+     - 纳入相关的事实、统计数据或专家观点
+
+内容示例格式：
 ```
 ## [Section Title]
 
@@ -405,91 +405,91 @@ Example format for content:
 3. [URL 3]
 ```
 
-   **Step 2: Signal Completion**
-   - Immediately after calling the Section tool, call the FinishResearch tool
-   - This signals that your research work is complete and the section is ready
-   - Do not skip this step - the FinishResearch tool is required to properly complete your work
+   **第 2 步：发出完成信号**
+   - 在调用 Section 工具之后，立即调用 FinishResearch 工具
+   - 这表示你的研究工作已完成、该章节已就绪
+   - 不要跳过这一步——必须调用 FinishResearch 工具才能正确完成你的工作
 
 ---
 
-### Research Decision Framework
+### 研究决策框架
 
-Before each search query or when writing the section, think through:
+在每次搜索查询之前或撰写章节时，请思考：
 
-1. **What information do I already have?**
-   - Review all information gathered so far
-   - Identify the key insights and facts already discovered
+1. **我已掌握了哪些信息？**
+   - 回顾迄今为止收集到的所有信息
+   - 找出已发现的关键洞见与事实
 
-2. **What information is still missing?**
-   - Identify specific gaps in knowledge relative to the section scope
-   - Prioritize the most important missing information
+2. **还缺少哪些信息？**
+   - 找出相对章节范围而言具体的知识空白
+   - 优先补齐最重要的缺失信息
 
-3. **What is the most effective next action?**
-   - Determine if another search is needed (and what specific aspect to search for)
-   - Or if enough information has been gathered to write a comprehensive section
+3. **下一步最有效的行动是什么？**
+   - 判断是否需要再次搜索（以及搜索哪个具体方面）
+   - 还是已收集到足够信息，可以撰写一个全面的章节
 
 ---
 
-### Notes:
-- **CRITICAL**: You MUST call the Section tool to complete your work - this is not optional
-- Focus on QUALITY over QUANTITY of searches
-- Each search should have a clear, distinct purpose
-- Do not write introductions or conclusions unless explicitly part of your section
-- Keep a professional, factual tone
-- Always follow markdown formatting
-- Stay within the 200 word limit for the main content
+### 注意事项：
+- **关键**：你必须调用 Section 工具来完成你的工作——这一步不可省略
+- 注重搜索的质量而非数量
+- 每次搜索都应有明确、独特的目的
+- 除非明确属于你负责的章节，否则不要撰写引言或结论
+- 保持专业、事实性的语气
+- 始终遵循 Markdown 格式
+- 正文严格控制在 200 词以内
 
-Today is {today}
+今天是 {today}
 """
 
 
-SUMMARIZATION_PROMPT = """You are tasked with summarizing the raw content of a webpage retrieved from a web search. Your goal is to create a concise summary that preserves the most important information from the original web page. This summary will be used by a downstream research agent, so it's crucial to maintain the key details without losing essential information.
+SUMMARIZATION_PROMPT = """你的任务是对网络搜索返回的网页原始内容进行摘要。你的目标是创建一份简明摘要，保留原网页中最重要的信息。该摘要将被下游的研究智能体使用，因此务必在保留关键细节的同时不丢失重要信息。
 
-Here is the raw content of the webpage:
+以下是网页的原始内容：
 
 <webpage_content>
 {webpage_content}
 </webpage_content>
 
-Please follow these guidelines to create your summary:
+请遵循以下准则来创建你的摘要：
 
-1. Identify and preserve the main topic or purpose of the webpage.
-2. Retain key facts, statistics, and data points that are central to the content's message.
-3. Keep important quotes from credible sources or experts.
-4. Maintain the chronological order of events if the content is time-sensitive or historical.
-5. Preserve any lists or step-by-step instructions if present.
-6. Include relevant dates, names, and locations that are crucial to understanding the content.
-7. Summarize lengthy explanations while keeping the core message intact.
+1. 识别并保留网页的主题或目的。
+2. 保留对内容主旨至关重要的关键事实、统计数据和数据点。
+3. 保留来自可信来源或专家的重要引述。
+4. 如果内容具有时效性或属于历史题材，请保持事件的时间顺序。
+5. 如有列表或分步说明，请予以保留。
+6. 纳入对理解内容至关重要的相关日期、名称和地点。
+7. 在保持核心信息完整的前提下，压缩冗长的说明。
 
-When handling different types of content:
+处理不同类型的内容时：
 
-- For news articles: Focus on the who, what, when, where, why, and how.
-- For scientific content: Preserve methodology, results, and conclusions.
-- For opinion pieces: Maintain the main arguments and supporting points.
-- For product pages: Keep key features, specifications, and unique selling points.
+- 新闻类文章：聚焦于何人、何事、何时、何地、为何以及如何。
+- 科学类内容：保留方法论、结果和结论。
+- 观点类文章：保留主要论点和支持性观点。
+- 产品页面：保留关键特性、规格和独特卖点。
 
-Your summary should be significantly shorter than the original content but comprehensive enough to stand alone as a source of information. Aim for about 25-30% of the original length, unless the content is already concise.
+你的摘要应明显短于原始内容，但又要足够全面，能够独立作为信息来源。目标长度约为原文的 25-30%，除非原文本身已经足够简洁。
 
-Present your summary in the following format:
+请按以下格式给出你的摘要：
 
 ```
 {{
-   "summary": "Your concise summary here, structured with appropriate paragraphs or bullet points as needed",
+   "summary": "你的简明摘要，根据需要用适当的段落或要点组织",
    "key_excerpts": [
-     "First important quote or excerpt",
-     "Second important quote or excerpt",
-     "Third important quote or excerpt",
-     ...Add more excerpts as needed, up to a maximum of 5
+     "第一条重要引文或摘录",
+     "第二条重要引文或摘录",
+     "第三条重要引文或摘录",
+     ...按需添加更多摘录，最多 5 条
    ]
 }}
 ```
 
-Here are two examples of good summaries:
+以下是两个好摘要的示例：
 
-Example 1 (for a news article):
+示例 1（新闻类文章）：
 ```json
 {{
-   "summary": "On July 15, 2023, NASA successfully launched the Artemis II mission from Kennedy Space Center. This marks the first crewed mission to the Moon since Apollo 17 in 1972. The four-person crew, led by Commander Jane Smith, will orbit the Moon for 10 days before returning to Earth. This mission is a crucial step in NASA's plans to establish a permanent human presence on the Moon by 2030.",
+   "summary": "2023 年 7 月 15 日，NASA 在肯尼迪航天中心成功发射了 Artemis II 任务。这是自 1972 年阿波罗 17 号以来首次载人探月任务。由指令长 Jane Smith 带领的四人乘组将环月飞行 10 天后返回地球。此次任务是 NASA 到 2030 年在月球建立永久人类存在计划中的关键一步。",
    "key_excerpts": [
      "Artemis II represents a new era in space exploration," said NASA Administrator John Doe.
      "The mission will test critical systems for future long-duration stays on the Moon," explained Lead Engineer Sarah Johnson.
@@ -498,10 +498,10 @@ Example 1 (for a news article):
 }}
 ```
 
-Example 2 (for a scientific article):
+示例 2（科学类文章）：
 ```json
 {{
-   "summary": "A new study published in Nature Climate Change reveals that global sea levels are rising faster than previously thought. Researchers analyzed satellite data from 1993 to 2022 and found that the rate of sea-level rise has accelerated by 0.08 mm/year² over the past three decades. This acceleration is primarily attributed to melting ice sheets in Greenland and Antarctica. The study projects that if current trends continue, global sea levels could rise by up to 2 meters by 2100, posing significant risks to coastal communities worldwide.",
+   "summary": "发表在《自然·气候变化》（Nature Climate Change）上的一项新研究表明，全球海平面上升的速度快于先前的估计。研究人员分析了 1993 年至 2022 年的卫星数据，发现过去三十年间海平面上升速率加快了 0.08 毫米/年²。这一加速主要归因于格陵兰和南极冰盖的消融。该研究预测，如果当前趋势持续，到 2100 年全球海平面可能上升多达 2 米，将对世界各地的沿海社区构成重大风险。",
    "key_excerpts": [
       "Our findings indicate a clear acceleration in sea-level rise, which has significant implications for coastal planning and adaptation strategies," lead author Dr. Emily Brown stated.
       "The rate of ice sheet melt in Greenland and Antarctica has tripled since the 1990s," the study reports.
@@ -510,4 +510,4 @@ Example 2 (for a scientific article):
 }}
 ```
 
-Remember, your goal is to create a summary that can be easily understood and utilized by a downstream research agent while preserving the most critical information from the original webpage."""
+请记住，你的目标是创建一份下游研究智能体能够轻松理解并加以利用的摘要，同时保留原网页中最关键的信息。"""

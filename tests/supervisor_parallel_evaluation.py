@@ -23,11 +23,11 @@ async def target(inputs: dict):
             "thread_id": str(uuid.uuid4()),
         }
     }
-    # NOTE: Configure the right dataset and evaluators
+    # 注意:请配置正确的数据集和评估器
     config["configurable"]["max_structured_output_retries"] = 3
     config["configurable"]["allow_clarification"] = False
     config["configurable"]["max_concurrent_research_units"] = 10
-    config["configurable"]["search_api"] = "tavily"     # NOTE: We use Tavily to stay consistent
+    config["configurable"]["search_api"] = "tavily"     # 注意:我们使用 Tavily 以保持一致
     config["configurable"]["max_researcher_iterations"] = 3
     config["configurable"]["max_react_tool_calls"] = 10
     config["configurable"]["summarization_model"] = "openai:gpt-4.1-nano"
@@ -38,7 +38,7 @@ async def target(inputs: dict):
     config["configurable"]["compression_model_max_tokens"] = 10000
     config["configurable"]["final_report_model"] = "openai:gpt-4.1"
     config["configurable"]["final_report_model_max_tokens"] = 10000
-    # NOTE: We do not use MCP tools to stay consistent
+    # 注意:为了保持一致,我们不使用 MCP 工具
     await graph.ainvoke(
         {"messages": [{"role": "user", "content": inputs["messages"][0]["content"]}]},
         config
