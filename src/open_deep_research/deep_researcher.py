@@ -43,6 +43,7 @@ from open_deep_research.utils import (
     anthropic_websearch_called,
     get_all_tools,
     get_api_key_for_model,
+    get_model_extra_body,
     get_model_token_limit,
     get_notes_from_tool_calls,
     get_today_str,
@@ -54,7 +55,7 @@ from open_deep_research.utils import (
 
 # 初始化一个可在整个智能体中使用的可配置模型
 configurable_model = init_chat_model(
-    configurable_fields=("model", "max_tokens", "api_key"),
+    configurable_fields=("model", "max_tokens", "api_key", "extra_body"),
 )
 
 async def clarify_with_user(state: AgentState, config: RunnableConfig) -> Command[Literal["write_research_brief", "__end__"]]:
@@ -82,13 +83,14 @@ async def clarify_with_user(state: AgentState, config: RunnableConfig) -> Comman
         "model": configurable.research_model,
         "max_tokens": configurable.research_model_max_tokens,
         "api_key": get_api_key_for_model(configurable.research_model, config),
+        "extra_body": get_model_extra_body(configurable.research_model),
         "tags": ["langsmith:nostream"]
     }
     
     # 为模型配置结构化输出与重试逻辑
     clarification_model = (
         configurable_model
-        .with_structured_output(ClarifyWithUser)
+        .with_structured_output(ClarifyWithUser, method="function_calling")
         .with_retry(stop_after_attempt=configurable.max_structured_output_retries)
         .with_config(model_config)
     )
@@ -135,13 +137,14 @@ async def write_research_brief(state: AgentState, config: RunnableConfig) -> Com
         "model": configurable.research_model,
         "max_tokens": configurable.research_model_max_tokens,
         "api_key": get_api_key_for_model(configurable.research_model, config),
+        "extra_body": get_model_extra_body(configurable.research_model),
         "tags": ["langsmith:nostream"]
     }
     
     # 为生成结构化研究问题配置模型
     research_model = (
         configurable_model
-        .with_structured_output(ResearchQuestion)
+        .with_structured_output(ResearchQuestion, method="function_calling")
         .with_retry(stop_after_attempt=configurable.max_structured_output_retries)
         .with_config(research_model_config)
     )
@@ -195,6 +198,7 @@ async def supervisor(state: SupervisorState, config: RunnableConfig) -> Command[
         "model": configurable.research_model,
         "max_tokens": configurable.research_model_max_tokens,
         "api_key": get_api_key_for_model(configurable.research_model, config),
+        "extra_body": get_model_extra_body(configurable.research_model),
         "tags": ["langsmith:nostream"]
     }
     
@@ -393,6 +397,7 @@ async def researcher(state: ResearcherState, config: RunnableConfig) -> Command[
         "model": configurable.research_model,
         "max_tokens": configurable.research_model_max_tokens,
         "api_key": get_api_key_for_model(configurable.research_model, config),
+        "extra_body": get_model_extra_body(configurable.research_model),
         "tags": ["langsmith:nostream"]
     }
     
@@ -528,6 +533,7 @@ async def compress_research(state: ResearcherState, config: RunnableConfig):
         "model": configurable.compression_model,
         "max_tokens": configurable.compression_model_max_tokens,
         "api_key": get_api_key_for_model(configurable.compression_model, config),
+        "extra_body": get_model_extra_body(configurable.compression_model),
         "tags": ["langsmith:nostream"]
     })
     
@@ -628,6 +634,7 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
         "model": configurable.final_report_model,
         "max_tokens": configurable.final_report_model_max_tokens,
         "api_key": get_api_key_for_model(configurable.final_report_model, config),
+        "extra_body": get_model_extra_body(configurable.final_report_model),
         "tags": ["langsmith:nostream"]
     }
     

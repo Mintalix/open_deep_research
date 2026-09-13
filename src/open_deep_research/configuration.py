@@ -62,11 +62,11 @@ class Configuration(BaseModel):
         }
     )
     max_concurrent_research_units: int = Field(
-        default=5,
+        default=1,
         metadata={
             "x_oap_ui_config": {
                 "type": "slider",
-                "default": 5,
+                "default": 1,
                 "min": 1,
                 "max": 20,
                 "step": 1,
@@ -92,11 +92,11 @@ class Configuration(BaseModel):
         }
     )
     max_researcher_iterations: int = Field(
-        default=6,
+        default=1,
         metadata={
             "x_oap_ui_config": {
                 "type": "slider",
-                "default": 6,
+                "default": 1,
                 "min": 1,
                 "max": 10,
                 "step": 1,
@@ -105,11 +105,11 @@ class Configuration(BaseModel):
         }
     )
     max_react_tool_calls: int = Field(
-        default=10,
+        default=2,
         metadata={
             "x_oap_ui_config": {
                 "type": "slider",
-                "default": 10,
+                "default": 2,
                 "min": 1,
                 "max": 30,
                 "step": 1,
@@ -119,11 +119,11 @@ class Configuration(BaseModel):
     )
     # 模型配置
     summarization_model: str = Field(
-        default="openai:gpt-4.1-mini",
+        default="openai:deepseek-flash",
         metadata={
             "x_oap_ui_config": {
                 "type": "text",
-                "default": "openai:gpt-4.1-mini",
+                "default": "openai:deepseek-flash",
                 "description": "用于对 Tavily 搜索结果进行摘要的模型"
             }
         }
@@ -151,11 +151,11 @@ class Configuration(BaseModel):
         }
     )
     research_model: str = Field(
-        default="openai:gpt-4.1",
+        default="openai:deepseek-flash",
         metadata={
             "x_oap_ui_config": {
                 "type": "text",
-                "default": "openai:gpt-4.1",
+                "default": "openai:deepseek-flash",
                 "description": "执行研究的模型。注意：请确保你的研究员模型支持所选的搜索 API。"
             }
         }
@@ -171,11 +171,11 @@ class Configuration(BaseModel):
         }
     )
     compression_model: str = Field(
-        default="openai:gpt-4.1",
+        default="openai:deepseek-flash",
         metadata={
             "x_oap_ui_config": {
                 "type": "text",
-                "default": "openai:gpt-4.1",
+                "default": "openai:deepseek-flash",
                 "description": "用于压缩子智能体研究发现的模型。注意：请确保你的压缩模型支持所选的搜索 API。"
             }
         }
@@ -191,11 +191,11 @@ class Configuration(BaseModel):
         }
     )
     final_report_model: str = Field(
-        default="openai:gpt-4.1",
+        default="openai:deepseek-flash",
         metadata={
             "x_oap_ui_config": {
                 "type": "text",
-                "default": "openai:gpt-4.1",
+                "default": "openai:deepseek-flash",
                 "description": "根据全部研究发现撰写最终报告的模型"
             }
         }

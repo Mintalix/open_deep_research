@@ -87,8 +87,9 @@ async def tavily_search(
         model=configurable.summarization_model,
         max_tokens=configurable.summarization_model_max_tokens,
         api_key=model_api_key,
+        extra_body=get_model_extra_body(configurable.summarization_model),
         tags=["langsmith:nostream"]
-    ).with_structured_output(Summary).with_retry(
+    ).with_structured_output(Summary, method="function_calling").with_retry(
         stop_after_attempt=configurable.max_structured_output_retries
     )
     
@@ -912,6 +913,12 @@ def get_api_key_for_model(model_name: str, config: RunnableConfig):
         elif model_name.startswith("google"):
             return os.getenv("GOOGLE_API_KEY")
         return None
+
+def get_model_extra_body(model_name: str):
+    """Return provider-specific request fields for a model."""
+    if "deepseek" in (model_name or "").lower():
+        return {"thinking": {"type": "disabled"}}
+    return None
 
 def get_tavily_api_key(config: RunnableConfig):
     """从环境变量或配置中获取 Tavily API 密钥。"""
