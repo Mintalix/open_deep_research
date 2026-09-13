@@ -58,7 +58,7 @@ langgraph dev
 
 (1) 与智能体聊一聊你感兴趣的主题，它就会启动报告生成：
 
-<img width="1326" alt="输入" src="https://img.mintalix.com/2026/09/68d31c178041d174.png" />
+<img alt="输入" src="https://img.mintalix.com/2026/09/68d31c178041d174.png" />
 
 (2) 报告以 markdown 格式生成。
 
@@ -66,25 +66,25 @@ langgraph dev
 
 (1) 提供一个 `Topic`（主题）：
 
-<img width="1326" alt="输入" src="https://img.mintalix.com/2026/09/b3e4ba9fef44f99c.png" />
+<img alt="输入" src="https://img.mintalix.com/2026/09/b3e4ba9fef44f99c.png" />
 
 (2) 系统会生成报告计划并呈现给用户审阅。
 
 (3) 我们可以传入一个包含反馈内容的字符串（`"..."`），根据反馈重新生成计划。
 
-<img width="1326" alt="反馈" src="https://img.mintalix.com/2026/09/7de31e9f005858fa.png" />
+<img alt="反馈" src="https://img.mintalix.com/2026/09/7de31e9f005858fa.png" />
 
 (4) 或者，我们也可以直接在 Studio 的 JSON 输入框中传入 `true` 来接受该计划。
 
-<img width="1480" alt="接受" src="https://img.mintalix.com/2026/09/2445913ca0d259aa.png" />
+<img alt="接受" src="https://img.mintalix.com/2026/09/2445913ca0d259aa.png" />
 
 (5) 计划被接受后，系统将开始生成报告的各个章节。
 
-<img width="1326" alt="报告生成" src="https://img.mintalix.com/2026/09/274d5d1cedcbd624.png" />
+<img alt="报告生成" src="https://img.mintalix.com/2026/09/274d5d1cedcbd624.png" />
 
 报告以 markdown 格式生成。
 
-<img width="1326" alt="报告" src="https://img.mintalix.com/2026/09/94f26376f56277b6.png" />
+<img alt="报告" src="https://img.mintalix.com/2026/09/94f26376f56277b6.png" />
 
 ### 搜索工具
 

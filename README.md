@@ -1,10 +1,10 @@
 # 🔬 Open Deep Research
 
-<img width="1388" height="298" alt="完整架构图" src="https://img.mintalix.com/2026/09/55050167206456d6.png" />
+<img alt="完整架构图" src="https://img.mintalix.com/2026/09/55050167206456d6.png" />
 
 深度研究（deep research）已成为最流行的智能体应用之一。本项目是一个简单、可配置、完全开源的深度研究智能体，可在多种模型提供商、搜索工具和 MCP 服务器上运行。它的性能与许多流行的深度研究智能体不相上下（[参见 Deep Research Bench 排行榜](https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard)）。
 
-<img width="817" height="666" alt="界面截图 2025-07-13" src="https://img.mintalix.com/2026/09/3c069a2f3cbae331.png" />
+<img alt="界面截图 2025-07-13" src="https://img.mintalix.com/2026/09/3c069a2f3cbae331.png" />
 
 ### 🔥 近期更新
 
