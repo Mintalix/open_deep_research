@@ -72,6 +72,29 @@ Open Deep Research 通过 [init_chat_model() API](https://python.langchain.com/d
 
 > 注意：使用 OpenRouter 请遵循[此指南](https://github.com/langchain-ai/open_deep_research/issues/75#issuecomment-2811472408)；通过 Ollama 使用本地模型请参见[安装说明](https://github.com/langchain-ai/open_deep_research/issues/65#issuecomment-2743586318)。
 
+##### OpenAI 兼容第三方 API
+
+DeepSeek、通义千问、OpenRouter 等提供 OpenAI 兼容接口时，可将
+`OPENAI_API_KEY` 设置为第三方密钥，并将 `OPENAI_BASE_URL` 设置为其
+文档指定的 base URL。四个模型配置字段使用
+`openai:<第三方模型名>`，例如：
+
+```dotenv
+OPENAI_API_KEY=your-provider-key
+OPENAI_BASE_URL=https://api.deepseek.com
+```
+
+然后将 `research_model`、`compression_model`、`final_report_model` 等配置为
+`openai:deepseek-chat`（具体模型名以服务商文档为准）。不要把 API 密钥提交到
+Git；若启用 `GET_API_KEYS_FROM_CONFIG=true`，请在 OAP 的 `apiKeys` 配置中填写
+`OPENAI_API_KEY`。
+
+要永久修改本地默认模型，请编辑 `src/open_deep_research/configuration.py` 中的
+`summarization_model`、`research_model`、`compression_model` 和
+`final_report_model` 字段，并将其默认值改为目标模型，例如
+`openai:deepseek-chat`。也可以在 LangGraph Studio 的 "Manage Assistants"
+中针对单个助手覆盖这些配置。
+
 #### 搜索 API :mag:
 
 Open Deep Research 支持众多搜索工具。默认情况下它使用 [Tavily](https://www.tavily.com/) 搜索 API。它具备完整的 MCP 兼容性，并支持 Anthropic 和 OpenAI 的原生网络搜索。有关更多细节，请参阅 [configuration.py](https://github.com/langchain-ai/open_deep_research/blob/main/src/open_deep_research/configuration.py) 文件中的 `search_api` 和 `mcp_config` 字段。这些配置可通过 LangGraph Studio UI 进行访问。
