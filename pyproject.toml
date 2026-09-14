@@ -65,6 +65,8 @@ packages = ["open_deep_research", "legacy", "tests"]
 "*" = ["py.typed"]
 
 [tool.ruff]
+extend-exclude = ["src/legacy"] # 已弃用实现单独维护，不属于当前代码质量门禁。
+force-exclude = true
 lint.select = [
     "E",    # pycodestyle
     "F",    # pyflakes
@@ -79,11 +81,13 @@ lint.ignore = [
     "UP007",
     "UP035",
     "D417",
+    # pydocstyle 仅识别英文句末标点，中文 docstring 会被错误标记。
+    "D415",
     "E501",
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["D", "UP"]
+"tests/*" = ["D", "T201", "UP"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

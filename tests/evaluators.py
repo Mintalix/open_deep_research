@@ -1,9 +1,18 @@
 from typing import cast
-from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
+
 from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
 from open_deep_research.utils import get_today_str
-from tests.prompts import RELEVANCE_PROMPT, STRUCTURE_PROMPT, GROUNDEDNESS_PROMPT, OVERALL_QUALITY_PROMPT, CORRECTNESS_PROMPT, COMPLETENESS_PROMPT
+from tests.prompts import (
+    COMPLETENESS_PROMPT,
+    CORRECTNESS_PROMPT,
+    GROUNDEDNESS_PROMPT,
+    OVERALL_QUALITY_PROMPT,
+    RELEVANCE_PROMPT,
+    STRUCTURE_PROMPT,
+)
 
 eval_model = ChatOpenAI(
     model="gpt-4.1",

@@ -1,10 +1,19 @@
-from langsmith import Client
-from tests.evaluators import eval_overall_quality, eval_relevance, eval_structure, eval_correctness, eval_groundedness, eval_completeness
-from dotenv import load_dotenv
 import asyncio
-from open_deep_research.deep_researcher import deep_researcher_builder
-from langgraph.checkpoint.memory import MemorySaver
 import uuid
+
+from dotenv import load_dotenv
+from langgraph.checkpoint.memory import MemorySaver
+from langsmith import Client
+
+from open_deep_research.deep_researcher import deep_researcher_builder
+from tests.evaluators import (
+    eval_completeness,
+    eval_correctness,
+    eval_groundedness,
+    eval_overall_quality,
+    eval_relevance,
+    eval_structure,
+)
 
 load_dotenv("../.env")
 
@@ -65,7 +74,7 @@ async def main():
         target,
         data=dataset_name,
         evaluators=evaluators,
-        experiment_prefix=f"ODR GPT-5, Tavily Search",
+        experiment_prefix="ODR GPT-5, Tavily Search",
         max_concurrency=10,
         metadata={
             "max_structured_output_retries": max_structured_output_retries,

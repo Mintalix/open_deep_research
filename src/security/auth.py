@@ -1,9 +1,12 @@
-import os
+"""LangGraph Studio 的 Supabase 身份验证处理器。"""
+
 import asyncio
+import os
+from typing import Any, Optional
+
 from langgraph_sdk import Auth
 from langgraph_sdk.auth.types import StudioUser
-from supabase import create_client, Client
-from typing import Optional, Any
+from supabase import Client, create_client
 
 supabase_url = os.environ.get("SUPABASE_URL")
 supabase_key = os.environ.get("SUPABASE_KEY")
@@ -21,7 +24,6 @@ auth = Auth()
 @auth.authenticate
 async def get_current_user(authorization: str | None) -> Auth.types.MinimalUserDict:
     """使用 Supabase 检查用户的 JWT 令牌是否有效。"""
-
     # 确保提供了 Authorization 请求头
     if not authorization:
         raise Auth.exceptions.HTTPException(
@@ -81,7 +83,6 @@ async def on_thread_create(
     1. 在正在创建的线程上设置元数据以跟踪所有权
     2. 返回一个过滤器，确保只有创建者才能访问该线程
     """
-
     if isinstance(ctx.user, StudioUser):
         return
 
@@ -116,6 +117,7 @@ async def on_assistants_create(
     ctx: Auth.types.AuthContext,
     value: Auth.types.on.assistants.create.value,
 ):
+    """创建助手时添加所有者。"""
     if isinstance(ctx.user, StudioUser):
         return
 
@@ -139,7 +141,6 @@ async def on_assistants_read(
     元数据 - 只需返回一个过滤器，
     确保用户只能看到自己的助手。
     """
-
     if isinstance(ctx.user, StudioUser):
         return
 
@@ -148,6 +149,7 @@ async def on_assistants_read(
 
 @auth.on.store()
 async def authorize_store(ctx: Auth.types.AuthContext, value: dict):
+    """仅允许用户访问自己的存储项。"""
     if isinstance(ctx.user, StudioUser):
         return
 

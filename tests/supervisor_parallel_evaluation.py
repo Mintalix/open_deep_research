@@ -1,8 +1,10 @@
-from open_deep_research.deep_researcher import deep_researcher_builder
-from langgraph.checkpoint.memory import MemorySaver
-import uuid
 import asyncio
+import uuid
+
+from langgraph.checkpoint.memory import MemorySaver
 from langsmith import Client
+
+from open_deep_research.deep_researcher import deep_researcher_builder
 
 client = Client()
 
@@ -52,7 +54,7 @@ async def main():
         target,
         data=dataset_name,
         evaluators=[right_parallelism_evaluator],
-        experiment_prefix=f"v1 #",
+        experiment_prefix="v1 #",
         max_concurrency=1,
     )
 
