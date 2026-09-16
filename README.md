@@ -4,6 +4,8 @@
 
 深度研究（deep research）已成为最流行的智能体应用之一。本项目是一个简单、可配置、完全开源的深度研究智能体，可在多种模型提供商、搜索工具和 MCP 服务器上运行。它的性能与许多流行的深度研究智能体不相上下（[参见 Deep Research Bench 排行榜](https://huggingface.co/spaces/Ayanami0730/DeepResearch-Leaderboard)）。
 
+> 本仓库基于 LangChain 的 [open_deep_research](https://github.com/langchain-ai/open_deep_research) 进行中文本地化与兼容性增强。感谢原项目作者及所有贡献者。
+
 <img alt="界面截图 2025-07-13" src="https://img.mintalix.com/2026/09/3c069a2f3cbae331.png" />
 
 ### 🔥 近期更新
@@ -155,7 +157,21 @@ Open Agent Platform（OAP）是一个面向非技术用户的 UI，让他们可�
 1. [部署 Open Agent Platform](https://docs.oap.langchain.com/quickstart)
 2. [将 Deep Researcher 添加到 OAP](https://docs.oap.langchain.com/setup/agents)
 
-### 旧版实现 🏛️
+### 📚 原项目与开源协议
+
+本项目基于 [LangChain Open Deep Research](https://github.com/langchain-ai/open_deep_research) 修改而来，主要进行了中文本地化、第三方模型兼容及其他适配。原项目采用 [MIT License](./LICENSE) 发布，本项目继续遵循 MIT License。使用、复制、修改或再分发本项目时，请保留原项目及本项目的版权声明和许可证文本。代码修改以当前仓库内容为准，原项目的最新功能和文档请以前述官方仓库为准。
+
+### 🔗 相关链接
+
+- [原项目仓库（LangChain）](https://github.com/langchain-ai/open_deep_research)
+- [原项目文档与使用说明](https://github.com/langchain-ai/open_deep_research#readme)
+- [本项目问题反馈](https://github.com/Mintalix/open_deep_research/issues)
+
+### 🔗 友情链接
+
+- [Linux.do](https://linux.do/) — 一个面向 Linux、开源与技术交流的社区
+
+
 
 `src/legacy/` 文件夹包含两个较早的实现，提供了自动化研究的替代方案。它们的性能不及当前实现，但为理解深度研究的不同方法提供了另类思路。
 
