@@ -6,6 +6,8 @@
 
 > 本仓库基于 LangChain 的 [open_deep_research](https://github.com/langchain-ai/open_deep_research) 进行中文本地化与兼容性增强。感谢原项目作者及所有贡献者。
 
+📖 **源码教学**：[从读懂源码到独立实现](docs/代码实现教学.md)——逐函数解释状态、模型调用、工具调度、并发研究和报告生成，附完整离线实现、复现练习及源码边界分析。
+
 <img alt="界面截图 2025-07-13" src="https://img.mintalix.com/2026/09/3c069a2f3cbae331.png" />
 
 ### 🔥 近期更新
